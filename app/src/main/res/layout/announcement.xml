@@ -24,9 +24,10 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:text="Lista Annunci"
+                android:text="Announcement List"
+                android:textStyle="bold"
                 android:textAllCaps="true"
-                android:textSize="50dp"
+                android:textSize="30dp"
                 android:textColor="#FFFFFF"
                 android:textAlignment="center"/>
 
@@ -49,7 +50,7 @@
                     android:layout_height="fill_parent"
                     android:layout_gravity="center"
                     android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Sedia"
+                    android:text="Chair"
                     android:textColor="@color/black"
                     tools:ignore="HardcodedText"
                     android:textSize="30dp"/>
@@ -73,7 +74,7 @@
                     android:layout_height="fill_parent"
                     android:layout_gravity="center"
                     android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Tavolo"
+                    android:text="Table"
                     android:textColor="@color/black"
                     tools:ignore="HardcodedText"
                     android:textSize="30dp"/>
@@ -97,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Libri"
+                    android:text="Books"
                     android:textColor="@color/black"
                     tools:ignore="HardcodedText"
                     android:textSize="30dp"/>
