@@ -46,7 +46,7 @@
         tools:layout_editor_absoluteY="360dp" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/enterPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -56,6 +56,7 @@
         tools:layout_editor_absoluteY="456dp" />
 
     <Button
+        android:id="@+id/signupButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/sign_up"
