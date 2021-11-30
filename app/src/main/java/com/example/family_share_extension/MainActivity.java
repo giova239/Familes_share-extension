@@ -1,6 +1,7 @@
 package com.example.family_share_extension;
 
 import android.os.Bundle;
+import android.widget.ListView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -12,9 +13,11 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.family_share_extension.databinding.ActivityMainBinding;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
