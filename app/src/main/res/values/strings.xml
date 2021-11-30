@@ -9,4 +9,7 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="text_here">Text Here</string>
+    <string name="send">SEND</string>
+    <string name="username_reciver">Username Reciver</string>
 </resources>
