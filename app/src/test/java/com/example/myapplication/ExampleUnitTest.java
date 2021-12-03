@@ -1,4 +1,4 @@
-package com.example.family_share_extension;
+package com.example.myapplication;
 
 import org.junit.Test;
 
