@@ -18,6 +18,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.myapplication.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,12 +63,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         // Display the first 500 characters of the response string.
-                        JSONObject json;
+                        JSONArray json;
+
+                        System.out.println(response);
                         try {
-                            json = new JSONObject(response);
-                            usernameFill.setText(json.getString("id_user"));
+                            json = new JSONArray(response);
+                            usernameFill.setText(json.getJSONObject(0).getString("id_user"));
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            System.out.println("error JSON" + e.toString());
                         }
                     }
                 }, new Response.ErrorListener() {
