@@ -18,6 +18,9 @@ import com.android.volley.toolbox.Volley;
 import com.example.myapplication.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -44,14 +47,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadUserProfile(){
 
-        final TextView usernameFill = (TextView) findViewById(R.id.UsernameFill);
-        final TextView emailFill = (TextView) findViewById(R.id.EmailFill);
-        final TextView nameFill = (TextView) findViewById(R.id.NameFill);
-        final TextView surnameFill = (TextView) findViewById(R.id.SurnameFill);
-        final TextView birthDateFill = (TextView) findViewById(R.id.NameFill);
+        final TextView usernameFill = findViewById(R.id.UsernameFill);
+        final TextView emailFill = findViewById(R.id.EmailFill);
+        final TextView nameFill = findViewById(R.id.NameFill);
+        final TextView surnameFill = findViewById(R.id.SurnameFill);
+        final TextView birthDateFill = findViewById(R.id.NameFill);
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://10.0.2.2:3300/users/";
+        String url ="http://10.0.2.2:3300/users/4";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -59,7 +62,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         // Display the first 500 characters of the response string.
-                        usernameFill.setText(response);
+                        JSONObject json;
+                        try {
+                            json = new JSONObject(response);
+                            usernameFill.setText(json.getString("id_user"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
