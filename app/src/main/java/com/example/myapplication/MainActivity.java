@@ -68,7 +68,13 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println(response);
                         try {
                             json = new JSONArray(response);
-                            usernameFill.setText(json.getJSONObject(0).getString("id_user"));
+
+                            usernameFill.setText(json.getJSONObject(0).getString("username"));
+                            emailFill.setText(json.getJSONObject(0).getString("email"));
+                            nameFill.setText(json.getJSONObject(0).getString("name"));
+                            surnameFill.setText(json.getJSONObject(0).getString("surname"));
+                            birthDateFill.setText(json.getJSONObject(0).getString("birth_date"));
+
                         } catch (JSONException e) {
                             System.out.println("error JSON" + e.toString());
                         }
