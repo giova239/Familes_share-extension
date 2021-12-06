@@ -1,8 +1,14 @@
 package com.example.myapplication;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,7 +22,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.myapplication.databinding.ActivityMainBinding;
+import com.example.myapplication.ui.home.HomeFragment;
+import com.example.myapplication.ui.dashboard.DashboardFragment;
+import com.example.myapplication.ui.notifications.NotificationsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,66 +39,35 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.activity_main);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
 
-        loadUserProfile();
-    }
+        //load HOME fragment first
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 
-    private void loadUserProfile(){
-
-        final TextView usernameFill = findViewById(R.id.UsernameFill);
-        final TextView emailFill = findViewById(R.id.EmailFill);
-        final TextView nameFill = findViewById(R.id.NameFill);
-        final TextView surnameFill = findViewById(R.id.SurnameFill);
-        final TextView birthDateFill = findViewById(R.id.BirthDateFill);
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://10.0.2.2:3300/users/4";
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        JSONArray json;
-
-                        System.out.println(response);
-                        try {
-                            json = new JSONArray(response);
-
-                            usernameFill.setText(json.getJSONObject(0).getString("username"));
-                            emailFill.setText(json.getJSONObject(0).getString("email"));
-                            nameFill.setText(json.getJSONObject(0).getString("name"));
-                            surnameFill.setText(json.getJSONObject(0).getString("surname"));
-                            birthDateFill.setText(json.getJSONObject(0).getString("birth_date"));
-
-                        } catch (JSONException e) {
-                            System.out.println("error JSON" + e.toString());
-                        }
-                    }
-                }, new Response.ErrorListener() {
+        //NavBar change listener
+        navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                usernameFill.setText("That didn't work!");
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()){
+                    case R.id.navigation_home:
+                        //change to PROFILE fragment
+                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+                        break;
+                    case R.id.navigation_dashboard:
+                        //change to GROUPS fragment
+                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new DashboardFragment()).commit();
+                        break;
+                    case R.id.navigation_notifications:
+                        //change to CHATS fragment
+                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationsFragment()).commit();
+                        break;
+                }
+
+                return false;
             }
         });
-
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-
     }
-
 }
