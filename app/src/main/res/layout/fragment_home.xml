@@ -35,6 +35,16 @@
             app:layout_constraintBottom_toTopOf="@id/Email"/>
 
         <TextView
+            android:id="@+id/UsernameFill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="prova"
+            android:textSize="20sp"
+            android:layout_marginLeft="30dp"
+            app:layout_constraintLeft_toRightOf="@id/Username"
+            app:layout_constraintBottom_toBottomOf="@+id/Username"/>
+
+        <TextView
             android:id="@+id/Email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,6 +56,16 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Username"
             app:layout_constraintBottom_toTopOf="@id/Name"/>
+
+        <TextView
+            android:id="@+id/EmailFill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="prova"
+            android:textSize="20sp"
+            android:layout_marginLeft="30dp"
+            app:layout_constraintLeft_toRightOf="@id/Username"
+            app:layout_constraintBottom_toBottomOf="@+id/Email"/>
 
         <TextView
             android:id="@+id/Name"
@@ -61,6 +81,17 @@
             app:layout_constraintBottom_toTopOf="@id/Surname"/>
 
         <TextView
+            android:id="@+id/NameFill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="prova"
+            android:textSize="20sp"
+            android:layout_marginLeft="30dp"
+            app:layout_constraintLeft_toRightOf="@id/Username"
+            app:layout_constraintBottom_toBottomOf="@+id/Name"/>
+
+
+        <TextView
             android:id="@+id/Surname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,6 +105,17 @@
             app:layout_constraintBottom_toTopOf="@id/BirthDate"/>
 
         <TextView
+            android:id="@+id/SurnameFill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="prova"
+            android:textSize="20sp"
+            android:layout_marginLeft="30dp"
+            app:layout_constraintLeft_toRightOf="@id/Username"
+            app:layout_constraintBottom_toBottomOf="@+id/Surname"/>
+
+
+        <TextView
             android:id="@+id/BirthDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,6 +126,17 @@
             android:layout_marginLeft="50dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Surname"/>
+
+        <TextView
+            android:id="@+id/BirthDateFill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="prova"
+            android:textSize="20sp"
+            android:layout_marginLeft="30dp"
+            app:layout_constraintLeft_toRightOf="@id/Username"
+            app:layout_constraintBottom_toBottomOf="@+id/BirthDate"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
