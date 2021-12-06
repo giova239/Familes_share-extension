@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView birthDateFill = (TextView) findViewById(R.id.NameFill);
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://locahost:3300/users/";
+        String url ="http://10.0.2.2:3300/users/";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
