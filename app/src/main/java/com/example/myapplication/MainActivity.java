@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView emailFill = findViewById(R.id.EmailFill);
         final TextView nameFill = findViewById(R.id.NameFill);
         final TextView surnameFill = findViewById(R.id.SurnameFill);
-        final TextView birthDateFill = findViewById(R.id.NameFill);
+        final TextView birthDateFill = findViewById(R.id.BirthDateFill);
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url ="http://10.0.2.2:3300/users/4";
