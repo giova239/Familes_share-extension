@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:text="prova"
             android:textSize="20sp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="10dp"
             app:layout_constraintLeft_toRightOf="@id/Username"
             app:layout_constraintBottom_toBottomOf="@+id/Username"/>
 
@@ -63,8 +63,8 @@
             android:layout_height="wrap_content"
             android:text="prova"
             android:textSize="20sp"
-            android:layout_marginLeft="30dp"
-            app:layout_constraintLeft_toRightOf="@id/Username"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintLeft_toRightOf="@id/Email"
             app:layout_constraintBottom_toBottomOf="@+id/Email"/>
 
         <TextView
@@ -86,8 +86,8 @@
             android:layout_height="wrap_content"
             android:text="prova"
             android:textSize="20sp"
-            android:layout_marginLeft="30dp"
-            app:layout_constraintLeft_toRightOf="@id/Username"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintLeft_toRightOf="@id/Name"
             app:layout_constraintBottom_toBottomOf="@+id/Name"/>
 
 
@@ -110,8 +110,8 @@
             android:layout_height="wrap_content"
             android:text="prova"
             android:textSize="20sp"
-            android:layout_marginLeft="30dp"
-            app:layout_constraintLeft_toRightOf="@id/Username"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintLeft_toRightOf="@id/Surname"
             app:layout_constraintBottom_toBottomOf="@+id/Surname"/>
 
 
@@ -133,8 +133,8 @@
             android:layout_height="wrap_content"
             android:text="prova"
             android:textSize="20sp"
-            android:layout_marginLeft="30dp"
-            app:layout_constraintLeft_toRightOf="@id/Username"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintLeft_toRightOf="@id/BirthDate"
             app:layout_constraintBottom_toBottomOf="@+id/BirthDate"/>
 
 
