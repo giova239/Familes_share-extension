@@ -37,9 +37,8 @@ public class DashboardFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
-        return root;
+        return binding.getRoot();
     }
 
     @Override
@@ -59,37 +58,31 @@ public class DashboardFragment extends Fragment {
         final LinearLayout insertHere = view.findViewById(R.id.linearLayout);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/usergropus/4";
+        String url ="http://10.0.2.2:3300/usergroups/4";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        JSONArray json;
+                response -> {
+                    // Display the first 500 characters of the response string.
+                    JSONArray json;
 
-                        System.out.println(response);
-                        try {
-                            json = new JSONArray(response);
+                    System.out.println(response);
+                    try {
+                        json = new JSONArray(response);
 
-                            for(int i = 0; i < json.length(); i++){
-                                TextView err = getNewTextView(view, json.getJSONObject(i).getString("name"));
-                                insertHere.addView(err);
-                            }
-
-                        } catch (JSONException e) {
-                            System.out.println("error JSON" + e.toString());
+                        for(int i = 0; i < json.length(); i++){
+                            TextView err = getNewTextView(view, json.getJSONObject(i).getString("name"));
+                            insertHere.addView(err);
                         }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
 
-                TextView err = getNewTextView(view, "Error 404");
-                insertHere.addView(err);
-            }
-        });
+                    } catch (JSONException e) {
+                        System.out.println("error JSON" + e.toString());
+                    }
+                }, error -> {
+
+                    TextView err = getNewTextView(view, "Error 404");
+                    insertHere.addView(err);
+                });
 
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
@@ -99,6 +92,7 @@ public class DashboardFragment extends Fragment {
     private TextView getNewTextView(View view, String text){
         TextView tmp = new TextView(view.getContext());
         tmp.setText(text);
+        tmp.setPadding(0, 15, 0, 15);
         tmp.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
         tmp.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tmp.setGravity(Gravity.CENTER);

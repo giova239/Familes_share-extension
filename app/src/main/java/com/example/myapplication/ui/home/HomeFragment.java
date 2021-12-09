@@ -63,36 +63,30 @@ public class HomeFragment extends Fragment {
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        JSONArray json;
+                response -> {
+                    // Display the first 500 characters of the response string.
+                    JSONArray json;
 
-                        System.out.println(response);
-                        try {
-                            json = new JSONArray(response);
+                    System.out.println(response);
+                    try {
+                        json = new JSONArray(response);
 
-                            usernameFill.setText(json.getJSONObject(0).getString("username"));
-                            emailFill.setText(json.getJSONObject(0).getString("email"));
-                            nameFill.setText(json.getJSONObject(0).getString("name"));
-                            surnameFill.setText(json.getJSONObject(0).getString("surname"));
-                            birthDateFill.setText(json.getJSONObject(0).getString("birth_date"));
+                        usernameFill.setText(json.getJSONObject(0).getString("username"));
+                        emailFill.setText(json.getJSONObject(0).getString("email"));
+                        nameFill.setText(json.getJSONObject(0).getString("name"));
+                        surnameFill.setText(json.getJSONObject(0).getString("surname"));
+                        birthDateFill.setText(json.getJSONObject(0).getString("birth_date"));
 
-                        } catch (JSONException e) {
-                            System.out.println("error JSON" + e.toString());
-                        }
+                    } catch (JSONException e) {
+                        System.out.println("error JSON" + e.toString());
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                usernameFill.setText("error 404");
-                emailFill.setText("error 404");
-                nameFill.setText("error 404");
-                surnameFill.setText("error 404");
-                birthDateFill.setText("error 404");
-            }
-        });
+                }, error -> {
+                    usernameFill.setText("error 404");
+                    emailFill.setText("error 404");
+                    nameFill.setText("error 404");
+                    surnameFill.setText("error 404");
+                    birthDateFill.setText("error 404");
+                });
 
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
