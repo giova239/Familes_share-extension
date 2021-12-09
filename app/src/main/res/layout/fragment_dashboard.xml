@@ -41,42 +41,6 @@
                 android:textColor="#FFFFFF"
                 android:textAlignment="center"/>
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:text="Classe 5B"
-                android:textColor="@color/black"
-                tools:ignore="HardcodedText"
-                android:textSize="25dp"
-                android:textAlignment="center"/>
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:text="Classe 3A"
-                android:textColor="@color/black"
-                tools:ignore="HardcodedText"
-                android:textSize="25dp"
-                android:textAlignment="center"/>
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:text="anno 2007 Martellago"
-                android:textColor="@color/black"
-                tools:ignore="HardcodedText"
-                android:textSize="25dp"
-                android:textAlignment="center"/>
-
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
