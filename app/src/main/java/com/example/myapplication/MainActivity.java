@@ -47,27 +47,24 @@ public class MainActivity extends AppCompatActivity {
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 
         //NavBar change listener
-        navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        navView.setOnItemSelectedListener(item -> {
 
-                switch (item.getItemId()){
-                    case R.id.navigation_home:
-                        //change to PROFILE fragment
-                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-                        break;
-                    case R.id.navigation_dashboard:
-                        //change to GROUPS fragment
-                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new DashboardFragment()).commit();
-                        break;
-                    case R.id.navigation_notifications:
-                        //change to CHATS fragment
-                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationsFragment()).commit();
-                        break;
-                }
-
-                return true;
+            switch (item.getItemId()){
+                case R.id.navigation_home:
+                    //change to PROFILE fragment
+                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+                    break;
+                case R.id.navigation_dashboard:
+                    //change to GROUPS fragment
+                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new DashboardFragment()).commit();
+                    break;
+                case R.id.navigation_notifications:
+                    //change to CHATS fragment
+                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationsFragment()).commit();
+                    break;
             }
+
+            return true;
         });
     }
 }
