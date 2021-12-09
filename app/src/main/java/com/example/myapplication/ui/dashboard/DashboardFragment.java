@@ -92,7 +92,7 @@ public class DashboardFragment extends Fragment {
     private TextView getNewTextView(View view, String text){
         TextView tmp = new TextView(view.getContext());
         tmp.setText(text);
-        tmp.setPadding(0, 15, 0, 15);
+        tmp.setPadding(0, 30, 0, 30);
         tmp.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
         tmp.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tmp.setGravity(Gravity.CENTER);
