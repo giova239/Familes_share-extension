@@ -59,7 +59,7 @@ public class HomeFragment extends Fragment {
         final TextView birthDateFill = view.findViewById(R.id.BirthDateFill);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/users/4";
+        String url ="http://10.0.2.2:3300/users/1";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

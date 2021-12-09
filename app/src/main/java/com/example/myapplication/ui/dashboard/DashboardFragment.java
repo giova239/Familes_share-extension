@@ -59,7 +59,7 @@ public class DashboardFragment extends Fragment {
         final LinearLayout insertHere = view.findViewById(R.id.linearLayout);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/usergropus/4";
+        String url ="http://10.0.2.2:3300/usergroups/1";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
