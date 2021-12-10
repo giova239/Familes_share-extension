@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,5 +53,11 @@ public class GroupFragment extends Fragment {
     private void loadGroupInfos(View view){
         TextView title = view.findViewById(R.id.title);
         title.setText(this.group_name);
+
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+        View layout = inflater.inflate(R.layout.announcement, null, false);
+
+        LinearLayout linear = view.findViewById(R.id.announcementList);
+        linear.addView(layout);
     }
 }
