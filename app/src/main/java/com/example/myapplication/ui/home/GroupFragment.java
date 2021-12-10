@@ -62,7 +62,7 @@ public class GroupFragment extends Fragment {
         title.setText(this.group_name);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/announcemetListForGroup/"+this.group_id;
+        String url ="http://10.0.2.2:3300/announcementListForGroup/"+this.group_id;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
