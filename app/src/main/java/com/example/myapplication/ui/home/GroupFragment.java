@@ -13,8 +13,15 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentGroupBinding;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class GroupFragment extends Fragment {
 
@@ -54,10 +61,54 @@ public class GroupFragment extends Fragment {
         TextView title = view.findViewById(R.id.title);
         title.setText(this.group_name);
 
-        LayoutInflater inflater = LayoutInflater.from(view.getContext());
-        View layout = inflater.inflate(R.layout.announcement, null, false);
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url ="http://10.0.2.2:3300/announcemetListForGroup/"+this.group_id;
 
-        LinearLayout linear = view.findViewById(R.id.announcementList);
-        linear.addView(layout);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+
+                    JSONArray json;
+
+                    System.out.println(response);
+                    try {
+                        json = new JSONArray(response);
+
+                        for(int i = 0; i < json.length(); i++){
+
+                            //Get Template
+                            LayoutInflater inflater = LayoutInflater.from(view.getContext());
+                            View layout = inflater.inflate(R.layout.announcement, null, false);
+
+                            //Change Image
+                            layout.findViewById(R.id.announcementIcon);//TODO: change image
+                            //Change Announcement Title
+                            TextView announcement_title = layout.findViewById(R.id.annoncementTitle);
+                            announcement_title.setText(json.getJSONObject(i).getString("title"));
+                            //Change Announcement Description
+                            TextView announcement_description = layout.findViewById(R.id.annoncementDescription);
+                            announcement_description.setText(json.getJSONObject(i).getString("description"));
+
+                            //Load announcement
+                            LinearLayout linear = view.findViewById(R.id.announcementList);
+                            linear.addView(layout);
+
+                        }
+
+                    } catch (JSONException e) {
+                        System.out.println("error JSON" + e.toString());
+                    }
+                }, error -> {
+
+            //Get Template
+            LayoutInflater inflater = LayoutInflater.from(view.getContext());
+            View layout = inflater.inflate(R.layout.announcement, null, false);
+
+            //Load announcement
+            LinearLayout linear = view.findViewById(R.id.announcementList);
+            linear.addView(layout);
+
+        });
+
+        queue.add(stringRequest);
     }
 }

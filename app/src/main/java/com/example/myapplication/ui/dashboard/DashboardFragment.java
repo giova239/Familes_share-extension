@@ -64,10 +64,9 @@ public class DashboardFragment extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url ="http://10.0.2.2:3300/usergroups/1";
 
-        // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
-                    // Display the first 500 characters of the response string.
+
                     JSONArray json;
 
                     System.out.println(response);
@@ -88,7 +87,6 @@ public class DashboardFragment extends Fragment {
                     insertHere.addView(err);
                 });
 
-        // Add the request to the RequestQueue.
         queue.add(stringRequest);
 
     }
