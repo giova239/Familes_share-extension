@@ -94,7 +94,7 @@ public class GroupFragment extends Fragment {
                                 AnnouncementFragment f = new AnnouncementFragment();
                                 Bundle b = new Bundle();
                                 try {
-                                    b.putString("announcement_id", json.getJSONObject(index).getString("announcement_id"));
+                                    b.putString("announcement_id", json.getJSONObject(index).getString("id_announcement"));
                                     b.putString("announcement_name", json.getJSONObject(index).getString("title"));
                                     b.putString("announcement_description", json.getJSONObject(index).getString("description"));
                                     b.putString("announcement_id", json.getJSONObject(index).getString("category"));
@@ -103,7 +103,7 @@ public class GroupFragment extends Fragment {
                                 }
                                 f.setArguments(b);
                                 fs.replace(R.id.fragment_container, f);
-                                fs.addToBackStack("groups");
+                                fs.addToBackStack("announcements");
                                 fs.commit();
                             });
 

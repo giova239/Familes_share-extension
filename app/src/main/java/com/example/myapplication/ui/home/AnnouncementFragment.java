@@ -52,6 +52,7 @@ public class AnnouncementFragment extends Fragment {
     }
 
     private void loadAnnouncementInfos(View view){
+        System.out.println(this.announcement_id+this.announcement_name+this.announcement_description+this.announcement_category);
         TextView title = view.findViewById(R.id.announcementTitle);
         title.setText(this.announcement_name);
         TextView desc = view.findViewById(R.id.annoncementDescription);
