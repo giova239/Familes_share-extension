@@ -1,6 +1,7 @@
 package com.example.myapplication.ui.home;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -58,7 +57,7 @@ public class GroupFragment extends Fragment {
     }
 
     private void loadGroupInfos(View view){
-        TextView title = view.findViewById(R.id.title);
+        TextView title = view.findViewById(R.id.announcementTitle);
         title.setText(this.group_name);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
@@ -74,10 +73,11 @@ public class GroupFragment extends Fragment {
                         json = new JSONArray(response);
 
                         for(int i = 0; i < json.length(); i++){
+                            final int index = i;
 
                             //Get Template
                             LayoutInflater inflater = LayoutInflater.from(view.getContext());
-                            View layout = inflater.inflate(R.layout.announcement, null, false);
+                            View layout = inflater.inflate(R.layout.announcementitem, null, false);
 
                             //Change Image
                             layout.findViewById(R.id.announcementIcon);//TODO: change image
@@ -87,6 +87,25 @@ public class GroupFragment extends Fragment {
                             //Change Announcement Description
                             TextView announcement_description = layout.findViewById(R.id.annoncementDescription);
                             announcement_description.setText(json.getJSONObject(i).getString("description"));
+                            //Set OnClickListener for announcement item
+                            layout.setOnClickListener(v -> {
+                                System.out.println("CLICKED");
+                                FragmentTransaction fs = getFragmentManager().beginTransaction();
+                                AnnouncementFragment f = new AnnouncementFragment();
+                                Bundle b = new Bundle();
+                                try {
+                                    b.putString("announcement_id", json.getJSONObject(index).getString("announcement_id"));
+                                    b.putString("announcement_name", json.getJSONObject(index).getString("title"));
+                                    b.putString("announcement_description", json.getJSONObject(index).getString("description"));
+                                    b.putString("announcement_id", json.getJSONObject(index).getString("category"));
+                                } catch (JSONException e) {
+                                    System.out.println("error JSON" + e.toString());
+                                }
+                                f.setArguments(b);
+                                fs.replace(R.id.fragment_container, f);
+                                fs.addToBackStack("groups");
+                                fs.commit();
+                            });
 
                             //Load announcement
                             LinearLayout linear = view.findViewById(R.id.announcementList);
@@ -101,7 +120,7 @@ public class GroupFragment extends Fragment {
 
             //Get Template
             LayoutInflater inflater = LayoutInflater.from(view.getContext());
-            View layout = inflater.inflate(R.layout.announcement, null, false);
+            View layout = inflater.inflate(R.layout.announcementitem, null, false);
 
             //Load announcement
             LinearLayout linear = view.findViewById(R.id.announcementList);

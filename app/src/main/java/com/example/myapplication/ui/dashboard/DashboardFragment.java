@@ -103,7 +103,6 @@ public class DashboardFragment extends Fragment {
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
         tmp.setOnClickListener(v -> {
-            System.out.println("clicked " + group_name);
             FragmentTransaction fs = getFragmentManager().beginTransaction();
             GroupFragment f = new GroupFragment();
             Bundle b = new Bundle();
