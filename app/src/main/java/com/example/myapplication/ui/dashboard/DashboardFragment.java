@@ -75,7 +75,7 @@ public class DashboardFragment extends Fragment {
                         json = new JSONArray(response);
 
                         for(int i = 0; i < json.length(); i++){
-                            TextView err = getNewTextView(view, json.getJSONObject(i).getString("name"));
+                            TextView err = getNewTextView(view, json.getJSONObject(i).getString("id_group"), json.getJSONObject(i).getString("name"));
                             insertHere.addView(err);
                         }
 
@@ -84,7 +84,7 @@ public class DashboardFragment extends Fragment {
                     }
                 }, error -> {
 
-                    TextView err = getNewTextView(view, "Error 404");
+                    TextView err = getNewTextView(view, null, "Error 404");
                     insertHere.addView(err);
                 });
 
@@ -93,9 +93,9 @@ public class DashboardFragment extends Fragment {
 
     }
 
-    private TextView getNewTextView(View view, String text){
+    private TextView getNewTextView(View view, String group_id, String group_name){
         TextView tmp = new TextView(view.getContext());
-        tmp.setText(text);
+        tmp.setText(group_name);
         tmp.setPadding(0, 30, 0, 30);
         tmp.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
         tmp.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -105,9 +105,14 @@ public class DashboardFragment extends Fragment {
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
         tmp.setOnClickListener(v -> {
-            System.out.println("clicked " + text);
+            System.out.println("clicked " + group_name);
             FragmentTransaction fs = getFragmentManager().beginTransaction();
-            fs.replace(R.id.fragment_container, new GroupFragment());
+            GroupFragment f = new GroupFragment();
+            Bundle b = new Bundle();
+            b.putString("group_id", group_id);
+            b.putString("group_name", group_name);
+            f.setArguments(b);
+            fs.replace(R.id.fragment_container, f);
             fs.addToBackStack("groups");
             fs.commit();
         });
