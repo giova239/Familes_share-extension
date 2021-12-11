@@ -89,7 +89,6 @@ public class GroupFragment extends Fragment {
                             announcement_description.setText(json.getJSONObject(i).getString("description"));
                             //Set OnClickListener for announcement item
                             layout.setOnClickListener(v -> {
-                                System.out.println("CLICKED");
                                 FragmentTransaction fs = getFragmentManager().beginTransaction();
                                 AnnouncementFragment f = new AnnouncementFragment();
                                 Bundle b = new Bundle();
@@ -129,5 +128,13 @@ public class GroupFragment extends Fragment {
         });
 
         queue.add(stringRequest);
+
+        view.findViewById(R.id.createAnnouncementButton).setOnClickListener(v -> {
+            FragmentTransaction fs = getFragmentManager().beginTransaction();
+            CreateAnnouncementFragment f = new CreateAnnouncementFragment();
+            fs.replace(R.id.fragment_container, f);
+            fs.addToBackStack("announcements");
+            fs.commit();
+        });
     }
 }
