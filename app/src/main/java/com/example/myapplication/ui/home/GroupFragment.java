@@ -2,6 +2,7 @@ package com.example.myapplication.ui.home;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.icu.util.BuddhistCalendar;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -132,6 +133,9 @@ public class GroupFragment extends Fragment {
         view.findViewById(R.id.createAnnouncementButton).setOnClickListener(v -> {
             FragmentTransaction fs = getFragmentManager().beginTransaction();
             CreateAnnouncementFragment f = new CreateAnnouncementFragment();
+            Bundle b = new Bundle();
+            b.putString("id_group", this.group_id);
+            f.setArguments(b);
             fs.replace(R.id.fragment_container, f);
             fs.addToBackStack("announcements");
             fs.commit();

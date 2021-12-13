@@ -41,6 +41,7 @@ public class CreateAnnouncementFragment extends Fragment {
 
     private FragmentCreateAnnouncementBinding binding;
     private List<Bitmap> images = new LinkedList<>();
+    private String group_id;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class CreateAnnouncementFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.group_id = getArguments().getString("id_group");
         loadCreateAnnouncement(view);
     }
 
@@ -92,6 +94,7 @@ public class CreateAnnouncementFragment extends Fragment {
                 j.put("title", title);
                 j.put("description", description);
                 j.put("type", type);
+                j.put("id_group", this.group_id);
                 JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, j,
                         response -> {
                             Toast.makeText(v.getContext(), "Announcement Created", Toast.LENGTH_SHORT);
