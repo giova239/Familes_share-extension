@@ -1,13 +1,10 @@
 package com.example.myapplication.ui.home;
 
-import android.app.DownloadManager;
 import android.app.Fragment;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.os.FileUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,25 +19,32 @@ import androidx.annotation.Nullable;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BaseHttpStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
+import com.example.myapplication.Retrofit.ServiceGenerator;
 import com.example.myapplication.databinding.FragmentCreateAnnouncementBinding;
+import com.example.myapplication.Retrofit.UploadImageService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Call;
 
 public class CreateAnnouncementFragment extends Fragment {
 
     private FragmentCreateAnnouncementBinding binding;
-    private List<Bitmap> images = new LinkedList<>();
+    private List<Uri> images = new LinkedList<>();
     private String group_id;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -97,7 +101,7 @@ public class CreateAnnouncementFragment extends Fragment {
                 j.put("id_group", this.group_id);
                 JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, j,
                         response -> {
-                            Toast.makeText(v.getContext(), "Announcement Created", Toast.LENGTH_SHORT);
+                            Toast.makeText(getContext(), "Announcement Created", Toast.LENGTH_SHORT);
                             try {
                                 String id_announcement = response.getString("id_announcement");
                                 uploadImages(id_announcement);
@@ -106,7 +110,7 @@ public class CreateAnnouncementFragment extends Fragment {
                             }
                         },
                         error -> {
-                            Toast.makeText(v.getContext(), "Error on announcement creation", Toast.LENGTH_SHORT);
+                            Toast.makeText(getContext(), "Error on announcement creation", Toast.LENGTH_SHORT);
                 });
                 queue.add(req);
 
@@ -123,39 +127,48 @@ public class CreateAnnouncementFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == -1 && requestCode == 1){
 
-            try {
+            //retrive Image and show it on photoList
+            ImageView img = new ImageView(getContext());
+            Uri image_uri = data.getData();
+            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            p.setMargins(20,20,20,20);
+            img.setLayoutParams(p);
+            img.setImageURI(image_uri);
+            LinearLayout photoList = getView().findViewById(R.id.photoList);
+            photoList.addView(img);
 
-                //retrive Image
-                ImageView img = new ImageView(getContext());
-                Uri image_uri = data.getData();
-                LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                p.setMargins(20,20,20,20);
-                img.setLayoutParams(p);
-
-                //convert image to bitmap and save it in this.images
-                Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), image_uri);
-                this.images.add(image_bitmap);
-
-                //add image to photoList
-                img.setImageBitmap(image_bitmap);
-                LinearLayout photoList = getView().findViewById(R.id.photoList);
-                photoList.addView(img);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            //save Image URI to this.images
+            this.images.add(image_uri);
 
         }
     }
 
     private void uploadImages(String id_announcement){
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/uploadimage/"+id_announcement;
-        for (Bitmap b : this.images){
+        UploadImageService service = ServiceGenerator.createService(UploadImageService.class);
+
+        for (Uri u : this.images){
+            File file = new File(u.getPath());
+
+            RequestBody requestFile = RequestBody.create(MediaType.parse(getContext().getContentResolver().getType(u)), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+            RequestBody announcement_id = RequestBody.create(okhttp3.MultipartBody.FORM, id_announcement);
+
+            Call<ResponseBody> call = service.uploadImage(announcement_id, body);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call,
+                                       Response<ResponseBody> response) {
+                    System.out.println("IMAGE UPLOADED");
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    System.out.println("ERROR UPLOADING THE IMAGE");
+                }
+            });
 
         }
-
     }
 
 }
