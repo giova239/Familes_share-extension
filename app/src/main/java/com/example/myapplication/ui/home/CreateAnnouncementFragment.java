@@ -87,7 +87,7 @@ public class CreateAnnouncementFragment extends Fragment {
             //POST create announcement
             try {
                 RequestQueue queue = Volley.newRequestQueue(getContext());
-                String url ="http://10.0.2.2:3300/createAnnouncement/4";
+                String url ="http://10.0.2.2:3300/createAnnouncement/1";
                 JSONObject j = new JSONObject();
                 j.put("title", title);
                 j.put("description", description);
