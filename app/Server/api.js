@@ -165,7 +165,7 @@ app.post('/createAnnouncement/:id', (req, res)=> {
     client.query(insertQuery, (err, result)=>{
         if(!err){
             insertAnnGroup(result.rows[0].id_announcement, announcement.id_group);
-            res.send('Insertion Announcement successful')
+            res.send(result.rows[0])
         }
         else{ console.log(err.message) }
     })

@@ -26,6 +26,7 @@ import com.example.myapplication.Retrofit.ServiceGenerator;
 import com.example.myapplication.databinding.FragmentCreateAnnouncementBinding;
 import com.example.myapplication.Retrofit.UploadImageService;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -112,6 +113,7 @@ public class CreateAnnouncementFragment extends Fragment {
                         },
                         error -> {
                             Toast.makeText(getContext(), "Error on announcement creation", Toast.LENGTH_SHORT).show();
+                            System.out.println("ERROR"+error.toString());
                             getFragmentManager().popBackStackImmediate();
                 });
                 queue.add(req);
@@ -159,8 +161,7 @@ public class CreateAnnouncementFragment extends Fragment {
             Call<ResponseBody> call = service.uploadImage(announcement_id, body);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<ResponseBody> call,
-                                       Response<ResponseBody> response) {
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     System.out.println("IMAGE UPLOADED");
                 }
 

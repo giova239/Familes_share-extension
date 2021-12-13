@@ -69,7 +69,7 @@ public class GroupFragment extends Fragment {
 
                     JSONArray json;
 
-                    System.out.println(response);
+                    System.out.println("ANNOUNCEMENTS: " + response);
                     try {
                         json = new JSONArray(response);
 
