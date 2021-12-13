@@ -76,10 +76,9 @@ public class CreateAnnouncementFragment extends Fragment {
         view.findViewById(R.id.createAnnouncementButton).setOnClickListener(v -> {
 
             //RETRIEVE USER INPUT
-            EditText titleEditText = v.findViewById(R.id.enterTitle);
-            EditText descriptionEditText = v.findViewById(R.id.enterDescription);
-            Switch typeSwitch = v.findViewById(R.id.HadOrNeededSwitch);
-            LinearLayout photoList = v.findViewById(R.id.photoList);
+            EditText titleEditText = getView().findViewById(R.id.enterTitle);
+            EditText descriptionEditText = getView().findViewById(R.id.enterDescription);
+            Switch typeSwitch = getView().findViewById(R.id.HadOrNeededSwitch);
 
             String title = titleEditText.getText().toString();
             String description = descriptionEditText.getText().toString();
@@ -147,7 +146,7 @@ public class CreateAnnouncementFragment extends Fragment {
     }
 
     private void uploadImages(String id_announcement){
-        
+
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url ="http://10.0.2.2:3300/uploadimage/"+id_announcement;
         for (Bitmap b : this.images){
