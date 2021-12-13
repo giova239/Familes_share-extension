@@ -1,10 +1,15 @@
 package com.example.myapplication.ui.home;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.FileUtils;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +21,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.Retrofit.ServiceGenerator;
 import com.example.myapplication.databinding.FragmentCreateAnnouncementBinding;
@@ -45,6 +52,10 @@ import retrofit2.Call;
 public class CreateAnnouncementFragment extends Fragment {
 
     private FragmentCreateAnnouncementBinding binding;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private List<Uri> images = new LinkedList<>();
     private String group_id;
 
@@ -74,6 +85,7 @@ public class CreateAnnouncementFragment extends Fragment {
 
         //ADD PHOTO BUTTON
         view.findViewById(R.id.addPhotoButton).setOnClickListener(v -> {
+            verifyStoragePermissions(getActivity());
             Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickPhoto.setType("image/*");
             startActivityForResult(pickPhoto , 1);
@@ -151,8 +163,12 @@ public class CreateAnnouncementFragment extends Fragment {
 
         UploadImageService service = ServiceGenerator.createService(UploadImageService.class);
 
+        int pictureNumber = 0;
         for (Uri u : this.images){
-            File file = new File(u.getPath());
+
+            pictureNumber++;
+
+            File file = new File(getPath(u));
 
             RequestBody requestFile = RequestBody.create(MediaType.parse(getContext().getContentResolver().getType(u)), file);
             MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
@@ -168,9 +184,36 @@ public class CreateAnnouncementFragment extends Fragment {
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     System.out.println("ERROR UPLOADING THE IMAGE");
+                    t.printStackTrace();
                 }
             });
 
+        }
+    }
+
+    private String getPath(Uri uri)
+    {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null);
+        if (cursor == null) return null;
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String s= cursor.getString(column_index);
+        cursor.close();
+        return s;
+    }
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
         }
     }
 

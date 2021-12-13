@@ -118,7 +118,7 @@
 
         <LinearLayout
             android:id="@+id/photoList"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_margin="10dp"

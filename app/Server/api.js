@@ -5,6 +5,8 @@ const multer = require('multer');
 
 const app = express();
 
+//type "node api.js" in the terminal to RUN SERVER
+
 app.listen(3300, ()=>{
     console.log("Sever is now listening at port 3300");
 })
@@ -14,10 +16,9 @@ client.connect();
 const imageStorage = multer.diskStorage({
     // Destination to store image     
     destination: 'images', 
-        filename: (req, file, cb) => {
-            cb(null, file.fieldname + '_' + Date.now() 
-             + path.extname(file.originalname))
-        }
+    filename: (req, file, cb) => {
+        cb(null, req.body.id_announcement+ '_' + file.fieldname + '_' + Date.now())
+    }
 });
 
 const imageUpload = multer({
@@ -31,11 +32,12 @@ const imageUpload = multer({
     }
 }) 
 
-app.post('/uploadimage/:id', imageUpload.single('image'), (req, res) => {
+app.post('/uploadimage', imageUpload.single('image'), (req, res) => {
+    console.log(req.body);
     console.log(req.file.path);
 
-    let insertQuery = `insert into "Images"(id_image, id_announcement)
-                         values ('${req.file.path}', ${req.params.id})`;
+    let insertQuery = `insert into "Images"(image_path, id_announcement)
+                         values ('${req.file.path}', ${req.body.id_announcement})`;
 
     client.query(insertQuery, (err, result)=>{
         if(!err){
@@ -148,10 +150,7 @@ function insertAnnGroup(new_id, id_group){
                         values(${new_id}, ${id_group})`
     
     client.query(insertNew_id, (err, result)=>{
-        if(!err){
-            console.log("Insertion AnnouncementGroup successful")
-        }
-        else{ console.log(err.message) }
+        if(err){ console.log(err.message) }
     })
     client.end;     
 }
