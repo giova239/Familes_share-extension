@@ -101,16 +101,18 @@ public class CreateAnnouncementFragment extends Fragment {
                 j.put("id_group", this.group_id);
                 JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, j,
                         response -> {
-                            Toast.makeText(getContext(), "Announcement Created", Toast.LENGTH_SHORT);
+                            Toast.makeText(getContext(), "Announcement Created", Toast.LENGTH_SHORT).show();
                             try {
                                 String id_announcement = response.getString("id_announcement");
                                 uploadImages(id_announcement);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                            getFragmentManager().popBackStackImmediate();
                         },
                         error -> {
-                            Toast.makeText(getContext(), "Error on announcement creation", Toast.LENGTH_SHORT);
+                            Toast.makeText(getContext(), "Error on announcement creation", Toast.LENGTH_SHORT).show();
+                            getFragmentManager().popBackStackImmediate();
                 });
                 queue.add(req);
 
