@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -91,6 +92,9 @@ public class CreateAnnouncementFragment extends Fragment {
         //PUBLISH ANNOUNCEMENT BUTTON
         view.findViewById(R.id.createAnnouncementButton).setOnClickListener(v -> {
 
+            ProgressBar pbar = getView().findViewById(R.id.progressBar);
+            pbar.setVisibility(View.VISIBLE);
+
             //RETRIEVE USER INPUT
             EditText titleEditText = getView().findViewById(R.id.enterTitle);
             EditText descriptionEditText = getView().findViewById(R.id.enterDescription);
@@ -131,6 +135,7 @@ public class CreateAnnouncementFragment extends Fragment {
                 e.printStackTrace();
             }
 
+            pbar.setVisibility(View.VISIBLE);
 
         });
     }
