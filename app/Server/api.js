@@ -57,7 +57,7 @@ app.post('/uploadimage', imageUpload.single('image'), (req, res) => {
 app.get("/getImage/:id", (req, res)=>{ //get first image of the announcement
    client.query(`Select "Images".image_path from "Images" where "Images".id_announcement=${req.params.id} FETCH FIRST ROW ONLY`, (err, result)=>{
        if(!err){
-          fs.readFile(result.rows, function (err, data) {
+          fs.readFile(result.rows[0].image_path, function (err, data) {
             if (err) throw err; // fail if the file can't be read
             else {
                 res.send(data);
@@ -72,8 +72,8 @@ app.get("/getImages/:id", (req, res)=>{ //get all the image of the announcement
    client.query(`Select "Images".image_path from "Images" where "Images".id_announcement=${req.params.id}`, (err, result)=>{
        if(!err){
            var imageList = '<ul>'
-           for (var i = 0; i<result.row.length; i++){
-               fs.readFile(result.row[i], function (err, data) {
+           for (var i = 0; i<result.rows.length; i++){
+               fs.readFile(result.rows[i].image_path, function (err, data) {
                if (err) throw err;
                else{
                    imageList += '<li><a href="/?image=' + data + '">'
