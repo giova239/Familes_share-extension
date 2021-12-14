@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.FileUtils;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -27,13 +27,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.Retrofit.ServiceGenerator;
 import com.example.myapplication.databinding.FragmentCreateAnnouncementBinding;
-import com.example.myapplication.Retrofit.UploadImageService;
+import com.example.myapplication.Retrofit.TransferImageService;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -94,6 +92,9 @@ public class CreateAnnouncementFragment extends Fragment {
         //PUBLISH ANNOUNCEMENT BUTTON
         view.findViewById(R.id.createAnnouncementButton).setOnClickListener(v -> {
 
+            ProgressBar pbar = getView().findViewById(R.id.progressBar);
+            pbar.setVisibility(View.VISIBLE);
+
             //RETRIEVE USER INPUT
             EditText titleEditText = getView().findViewById(R.id.enterTitle);
             EditText descriptionEditText = getView().findViewById(R.id.enterDescription);
@@ -134,6 +135,7 @@ public class CreateAnnouncementFragment extends Fragment {
                 e.printStackTrace();
             }
 
+            pbar.setVisibility(View.VISIBLE);
 
         });
     }
@@ -161,7 +163,7 @@ public class CreateAnnouncementFragment extends Fragment {
 
     private void uploadImages(String id_announcement){
 
-        UploadImageService service = ServiceGenerator.createService(UploadImageService.class);
+        TransferImageService service = ServiceGenerator.createService(TransferImageService.class);
 
         int pictureNumber = 0;
         for (Uri u : this.images){
