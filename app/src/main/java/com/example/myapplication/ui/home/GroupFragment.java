@@ -2,11 +2,15 @@ package com.example.myapplication.ui.home;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.icu.util.BuddhistCalendar;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,10 +22,23 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.myapplication.R;
+import com.example.myapplication.Retrofit.ServiceGenerator;
+import com.example.myapplication.Retrofit.TransferImageService;
 import com.example.myapplication.databinding.FragmentGroupBinding;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class GroupFragment extends Fragment {
 
@@ -81,7 +98,8 @@ public class GroupFragment extends Fragment {
                             View layout = inflater.inflate(R.layout.announcementitem, null, false);
 
                             //Change Image
-                            layout.findViewById(R.id.announcementIcon);//TODO: change image
+                            ImageView img = view.findViewById(R.id.announcementIcon);
+                            downloadImage(json.getJSONObject(index).getString("id_announcement"),img);
                             //Change Announcement Title
                             TextView announcement_title = layout.findViewById(R.id.annoncementTitle);
                             announcement_title.setText(json.getJSONObject(i).getString("title"));
@@ -141,4 +159,96 @@ public class GroupFragment extends Fragment {
             fs.commit();
         });
     }
+
+    private void downloadImage(String id_announcement, ImageView img){
+
+        TransferImageService service = ServiceGenerator.createService(TransferImageService.class);
+
+        Call<ResponseBody> call = service.downloadImage("http://10.0.2.2:3300/getImage/"+id_announcement);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("server contacted and has iamge");
+
+                    String pathWereFileWasStored = writeResponseBodyToDisk(response.body());
+
+                    if(pathWereFileWasStored != null){
+                        System.out.println("IMAGE DOWNLOADED at:" + pathWereFileWasStored);
+                        Bitmap b = BitmapFactory.decodeFile(pathWereFileWasStored);
+                        if(b != null){
+                            System.out.println("IMAGE DISPLAYED");
+                            img.setImageBitmap(b);
+                        }else{
+                            System.out.println("error while decoding the image");
+                        }
+                    }else{
+                        System.out.println("error while downloading the image");
+                    }
+                } else {
+                    System.out.println("server contact failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("error");
+            }
+        });
+
+    }
+
+    private String writeResponseBodyToDisk(ResponseBody body) {
+        try {
+
+            String path = getContext().getExternalFilesDir(null) + File.separator + "CHANGE MY NAME";
+            File imageFile = new File(path);
+
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                byte[] fileReader = new byte[4096];
+
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
+
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(imageFile);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+
+                    if (read == -1) {
+                        break;
+                    }
+
+                    outputStream.write(fileReader, 0, read);
+
+                    fileSizeDownloaded += read;
+
+                    System.out.println("file download: " + fileSizeDownloaded + " of " + fileSize);
+                }
+
+                outputStream.flush();
+
+                return path;
+
+            } catch (IOException e) {
+                return null;
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
 }

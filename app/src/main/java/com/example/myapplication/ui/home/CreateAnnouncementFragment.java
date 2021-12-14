@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.FileUtils;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,13 +26,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.Retrofit.ServiceGenerator;
 import com.example.myapplication.databinding.FragmentCreateAnnouncementBinding;
-import com.example.myapplication.Retrofit.UploadImageService;
+import com.example.myapplication.Retrofit.TransferImageService;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -161,7 +158,7 @@ public class CreateAnnouncementFragment extends Fragment {
 
     private void uploadImages(String id_announcement){
 
-        UploadImageService service = ServiceGenerator.createService(UploadImageService.class);
+        TransferImageService service = ServiceGenerator.createService(TransferImageService.class);
 
         int pictureNumber = 0;
         for (Uri u : this.images){
