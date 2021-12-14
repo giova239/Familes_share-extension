@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.util.BuddhistCalendar;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -98,7 +99,7 @@ public class GroupFragment extends Fragment {
                             View layout = inflater.inflate(R.layout.announcementitem, null, false);
 
                             //Change Image
-                            ImageView img = view.findViewById(R.id.announcementIcon);
+                            ImageView img = layout.findViewById(R.id.announcementIcon);
                             downloadImage(json.getJSONObject(index).getString("id_announcement"),img);
                             //Change Announcement Title
                             TextView announcement_title = layout.findViewById(R.id.annoncementTitle);
@@ -176,12 +177,9 @@ public class GroupFragment extends Fragment {
 
                     if(pathWereFileWasStored != null){
                         System.out.println("IMAGE DOWNLOADED at:" + pathWereFileWasStored);
-                        Bitmap b = BitmapFactory.decodeFile(pathWereFileWasStored);
-                        if(b != null){
-                            System.out.println("IMAGE DISPLAYED");
-                            img.setImageBitmap(b);
-                        }else{
-                            System.out.println("error while decoding the image");
+                        Uri u = Uri.fromFile(new File(pathWereFileWasStored));
+                        if(u != null) {
+                            img.setImageURI(u);
                         }
                     }else{
                         System.out.println("error while downloading the image");
@@ -202,7 +200,7 @@ public class GroupFragment extends Fragment {
     private String writeResponseBodyToDisk(ResponseBody body) {
         try {
 
-            String path = getContext().getExternalFilesDir(null) + File.separator + "CHANGE MY NAME";
+            String path = getContext().getExternalFilesDir(null) + File.separator + "test.jpeg";
             File imageFile = new File(path);
 
             InputStream inputStream = null;
