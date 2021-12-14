@@ -55,10 +55,10 @@ public class NotificationsFragment extends Fragment {
 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadChat(view);
+        loadChats(view);
     }
 
-    private void loadChat(View view){
+    private void loadChats(View view){
         TextView title = view.findViewById(R.id.chatUser);
         title.setText(this.subject);
 

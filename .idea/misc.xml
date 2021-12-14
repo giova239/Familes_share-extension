@@ -21,6 +21,7 @@
         <entry key="app/src/main/res/layout/announcement.xml" value="0.394144990468085" />
         <entry key="app/src/main/res/layout/announcement_list.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/layout/announcementitem.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/chatitem.xml" value="0.29483695652173914" />
         <entry key="app/src/main/res/layout/conversation.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/layout/fragment_announcement.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.3880208333333333" />
@@ -33,6 +34,7 @@
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/layout/groups.xml" value="0.3986584634016943" />
         <entry key="app/src/main/res/layout/login.xml" value="1.0231940906486467" />
+        <entry key="app/src/main/res/layout/notificationitem.xml" value="0.2807971014492754" />
         <entry key="app/src/main/res/layout/sign_up.xml" value="0.4218514671684217" />
         <entry key="app/src/main/res/layout/user_profile.xml" value="0.3994980749827321" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.3619791666666667" />
