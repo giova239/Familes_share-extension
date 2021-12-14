@@ -51,6 +51,24 @@ app.post('/uploadimage', imageUpload.single('image'), (req, res) => {
     res.status(400).send({ error: error.message })
 })
 
+app.get("/getImage/:id", (req, res)=>{ //get first image of the announcement
+   client.query(`Select "Images".image_path from "Images" where "Images".id_announcement=${req.params.id} FETCH FIRST ROW ONLY`, (err, result)=>{
+       if(!err){
+           res.send(result.rows);
+       }
+   });
+   client.end;
+})
+
+app.get("/getImages/:id", (req, res)=>{ //get all the image of the announcement
+   client.query(`Select "Images".image_path from "Images" where "Images".id_announcement=${req.params.id}`, (err, result)=>{
+       if(!err){
+           res.send(result.rows);
+       }
+   });
+   client.end;
+})
+
 app.get('/users', (req, res)=>{
     client.query(`Select *, to_char(birth_date, 'DD-MON-YYYY') as birth_date from "Users"`, (err, result)=>{
         if(!err){
