@@ -152,7 +152,7 @@ app.get('/users/:id', (req, res)=>{
     client.end;
 })
 
-app.get('/chat/:id', (req, res)=>{
+app.get('/notifications/:id', (req, res)=>{
     client.query(`Select * from "Chats" where id_chat=${req.params.id}`, (err, result)=>{
         if(!err){
             res.send(result.rows);
