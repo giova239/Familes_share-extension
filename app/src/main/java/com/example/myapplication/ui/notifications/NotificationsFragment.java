@@ -63,7 +63,7 @@ public class NotificationsFragment extends Fragment {
         title.setText(this.subject);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/chat/"+this.subject;
+        String url ="http://10.0.2.2:3300/notifications/"+this.subject;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
