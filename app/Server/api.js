@@ -25,7 +25,7 @@ const imageStorage = multer.diskStorage({
 const imageUpload = multer({
     storage: imageStorage,
     fileFilter(req, file, cb) {
-        if (!file.originalname.match(/\.(png|jpg)$/)) { 
+        if (!file.originalname.match(/\.(png|jpg|jpeg|PNG|JPG|JPEG)$/)) { 
             // upload only png and jpg format
             return cb(new Error('Please upload a Image'))
         }
@@ -34,11 +34,10 @@ const imageUpload = multer({
 }) 
 
 app.post('/uploadimage', imageUpload.single('image'), (req, res) => {
-    console.log(req.body);
-    console.log(req.file.path);
+    console.log("UPLOADING IMAGE #" + req.body.id_announcement + " AT PATH: " + req.file.path);
 
     let insertQuery = `insert into "Images"(image_path, id_announcement)
-                         values ('${req.file.path}', ${req.body.id_announcement})`;
+                         values ('${req.file.path}', ${req.body.id_announcement.split("_")[0]})`;
 
     client.query(insertQuery, (err, result)=>{
         if(!err){
@@ -56,7 +55,8 @@ app.post('/uploadimage', imageUpload.single('image'), (req, res) => {
 
 app.get("/getImage/:id", (req, res)=>{ //get first image of the announcement
    client.query(`Select "Images".image_path from "Images" where "Images".id_announcement=${req.params.id} FETCH FIRST ROW ONLY`, (err, result)=>{
-       if(!err){
+
+       if(!err && result.rows[0]){
           fs.readFile(result.rows[0].image_path, function (err, data) {
             if (err) throw err; // fail if the file can't be read
             else {
@@ -68,23 +68,28 @@ app.get("/getImage/:id", (req, res)=>{ //get first image of the announcement
    client.end;
 })
 
-app.get("/getImages/:id", (req, res)=>{ //get all the image of the announcement
-   client.query(`Select "Images".image_path from "Images" where "Images".id_announcement=${req.params.id}`, (err, result)=>{
-       if(!err){
-           var imageList = '<ul>'
-           for (var i = 0; i<result.rows.length; i++){
-               fs.readFile(result.rows[i].image_path, function (err, data) {
-               if (err) throw err;
-               else{
-                   imageList += '<li><a href="/?image=' + data + '">'
-               }
-               });
-           }
-           imageList += '</ul>'
-           res.send(imageList);
-       }
-   });
-   client.end;
+app.get("/getImageByIndex/:id/:index", (req, res)=>{ //get first image of the announcement
+    client.query(`Select "Images".image_path from "Images" where "Images".id_announcement=${req.params.id}`, (err, result)=>{
+
+        if(!err && result.rows[req.params.index-1]){
+            fs.readFile(result.rows[req.params.index-1].image_path, function (err, data) {
+                if (!err){
+                    res.send(data);
+                    console.log("SENT IMAGE #" + req.params.index + " of ANNOUNCEMENT" + req.params.id);
+                }
+            });
+        }
+    });
+    client.end;
+ })
+
+ app.get('/getImageCount/:id', (req, res)=>{
+    client.query(`SELECT COUNT(*) AS ammount FROM "Images" where id_announcement=${req.params.id}`, (err, result)=>{
+        if(!err){
+            res.send(result.rows);
+        }
+    });
+    client.end;
 })
 
 app.get('/users', (req, res)=>{

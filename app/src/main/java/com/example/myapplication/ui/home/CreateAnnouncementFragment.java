@@ -163,29 +163,30 @@ public class CreateAnnouncementFragment extends Fragment {
 
     private void uploadImages(String id_announcement){
 
-        TransferImageService service = ServiceGenerator.createService(TransferImageService.class);
-
         int pictureNumber = 0;
         for (Uri u : this.images){
 
             pictureNumber++;
 
+            final int n = pictureNumber;
+
             File file = new File(getPath(u));
 
+            TransferImageService service = ServiceGenerator.createService(TransferImageService.class);
             RequestBody requestFile = RequestBody.create(MediaType.parse(getContext().getContentResolver().getType(u)), file);
             MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
-            RequestBody announcement_id = RequestBody.create(okhttp3.MultipartBody.FORM, id_announcement);
+            RequestBody announcement_id = RequestBody.create(okhttp3.MultipartBody.FORM, id_announcement+"_"+pictureNumber);
 
             Call<ResponseBody> call = service.uploadImage(announcement_id, body);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    System.out.println("IMAGE UPLOADED");
+                    System.out.println("IMAGE #" + n + " UPLOADED");
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    System.out.println("ERROR UPLOADING THE IMAGE");
+                    System.out.println("ERROR UPLOADING THE IMAGE #" + n);
                     t.printStackTrace();
                 }
             });

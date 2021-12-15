@@ -2,12 +2,8 @@ package com.example.myapplication.ui.home;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.icu.util.BuddhistCalendar;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,9 +100,6 @@ public class GroupFragment extends Fragment {
                             //Change Announcement Title
                             TextView announcement_title = layout.findViewById(R.id.annoncementTitle);
                             announcement_title.setText(json.getJSONObject(i).getString("title"));
-                            //Change Announcement Description
-                            TextView announcement_description = layout.findViewById(R.id.annoncementDescription);
-                            announcement_description.setText(json.getJSONObject(i).getString("description"));
                             //Set OnClickListener for announcement item
                             layout.setOnClickListener(v -> {
                                 FragmentTransaction fs = getFragmentManager().beginTransaction();
@@ -225,8 +218,6 @@ public class GroupFragment extends Fragment {
                     outputStream.write(fileReader, 0, read);
 
                     fileSizeDownloaded += read;
-
-                    System.out.println("file download: " + fileSizeDownloaded + " of " + fileSize);
                 }
 
                 outputStream.flush();
