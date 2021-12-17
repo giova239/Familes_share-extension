@@ -1,0 +1,6 @@
+#TODO: implement registration
+#TODO: implement login
+#TODO: extends groups and announcement with USER DISCRIMINATION
+#TODO: implement chats between users
+#TODO: extends announcements answering with starting a chat with the autor of the announcement
+#TODO: group creation and management
