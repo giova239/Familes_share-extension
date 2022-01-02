@@ -16,7 +16,7 @@
             android:layout_width="341dp"
             android:layout_height="163dp"
             android:src="@drawable/logo"
-            android:layout_marginTop="50dp"
+            android:layout_marginVertical="20dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -26,26 +26,68 @@
             android:id="@+id/signup_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/register"
+            android:text="@string/registetration"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginTop="50dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/logo"
-            app:layout_constraintBottom_toTopOf="@id/enterEmail"/>
+            app:layout_constraintBottom_toTopOf="@id/enterSignUpName"/>
 
         <EditText
-            android:id="@+id/enterEmail"
+            android:id="@+id/enterSignUpName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/name"
+            android:inputType="textPersonName"
+            android:layout_marginVertical="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/signup_text"
+            app:layout_constraintBottom_toTopOf="@id/enterSignUpSurname" />
+
+        <EditText
+            android:id="@+id/enterSignUpSurname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/surname"
+            android:inputType="textPersonName"
+            android:layout_marginVertical="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/enterSignUpName"
+            app:layout_constraintBottom_toTopOf="@id/enterSignUpEmail" />
+
+        <EditText
+            android:id="@+id/enterSignUpEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
-            android:layout_marginTop="20dp"
+            android:layout_marginVertical="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/signup_text"
+            app:layout_constraintTop_toBottomOf="@+id/enterSignUpSurname"
+            app:layout_constraintBottom_toTopOf="@id/enterSignUpBirthDate" />
+
+        <EditText
+            android:id="@+id/enterSignUpBirthDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/birthdate"
+            android:inputType="date"
+            android:layout_marginVertical="10dp"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/enterSignUpEmail"
             app:layout_constraintBottom_toTopOf="@id/enterSignUpPassword" />
 
         <EditText
@@ -55,10 +97,10 @@
             android:ems="10"
             android:hint="@string/password"
             android:inputType="textPassword"
-            android:layout_marginTop="20dp"
+            android:layout_marginVertical="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/enterEmail"
+            app:layout_constraintTop_toBottomOf="@+id/enterSignUpBirthDate"
             app:layout_constraintBottom_toTopOf="@id/enterSignUpConfirmPassword" />
 
         <EditText
@@ -68,7 +110,7 @@
             android:ems="10"
             android:hint="@string/confirm_password"
             android:inputType="textPassword"
-            android:layout_marginTop="20dp"
+            android:layout_marginVertical="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/enterSignUpPassword"
@@ -81,7 +123,7 @@
             android:hint="@string/register"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginTop="40dp"
+            android:layout_marginVertical="20dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/enterSignUpConfirmPassword"

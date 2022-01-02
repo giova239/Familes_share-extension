@@ -11,4 +11,8 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="text_here">Text Here</string>
     <string name="send">SEND</string>
+    <string name="registetration">REGISTRATION</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="birthdate">BirthDate</string>
 </resources>
