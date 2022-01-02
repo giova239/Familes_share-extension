@@ -3,9 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/alexc/AndroidStudioProjects/Familes_share-extension/app/src/main/res/drawable/ic_announcement.xml" value="0.31927083333333334" />
+        <entry key="..\:/Users/alexc/AndroidStudioProjects/Familes_share-extension/app/src/main/res/drawable/ic_announcement_create.xml" value="0.31927083333333334" />
         <entry key="..\:/Users/alexc/AndroidStudioProjects/Familes_share-extension/app/src/main/res/layout/activity_main.xml" value="0.4180253623188406" />
         <entry key="..\:/Users/alexc/AndroidStudioProjects/Familes_share-extension/app/src/main/res/layout/announcement.xml" value="0.328125" />
         <entry key="..\:/Users/alexc/AndroidStudioProjects/Familes_share-extension/app/src/main/res/layout/announcementitem.xml" value="0.3385416666666667" />
+        <entry key="..\:/Users/alexc/AndroidStudioProjects/Familes_share-extension/app/src/main/res/layout/fragment_announcement.xml" value="0.303125" />
         <entry key="..\:/Users/alexc/AndroidStudioProjects/Familes_share-extension/app/src/main/res/layout/fragment_create_announcement.xml" value="0.3385416666666667" />
         <entry key="..\:/Users/alexc/AndroidStudioProjects/Familes_share-extension/app/src/main/res/layout/fragment_dashboard.xml" value="0.4180253623188406" />
         <entry key="..\:/Users/alexc/AndroidStudioProjects/Familes_share-extension/app/src/main/res/layout/fragment_group.xml" value="0.55" />
