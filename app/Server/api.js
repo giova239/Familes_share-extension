@@ -58,8 +58,7 @@ app.get("/getImage/:id", (req, res)=>{ //get first image of the announcement
 
        if(!err && result.rows[0]){
           fs.readFile(result.rows[0].image_path, function (err, data) {
-            if (err) throw err; // fail if the file can't be read
-            else {
+            if (!err){
                 res.send(data);
             }
           });

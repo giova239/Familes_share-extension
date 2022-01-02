@@ -15,18 +15,18 @@
             android:id="@+id/logo"
             android:layout_width="341dp"
             android:layout_height="163dp"
-            android:layout_marginTop="50dp"
             android:src="@drawable/logo"
-            app:layout_constraintBottom_toTopOf="@id/login_text"
+            android:layout_marginTop="50dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/signup_text"/>
 
         <TextView
-            android:id="@+id/login_text"
+            android:id="@+id/signup_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/login"
+            android:text="@string/register"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginTop="50dp"
@@ -45,11 +45,11 @@
             android:layout_marginTop="20dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login_text"
-            app:layout_constraintBottom_toTopOf="@id/enterPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/signup_text"
+            app:layout_constraintBottom_toTopOf="@id/enterSignUpPassword" />
 
         <EditText
-            android:id="@+id/enterPassword"
+            android:id="@+id/enterSignUpPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -59,19 +59,32 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/enterEmail"
-            app:layout_constraintBottom_toTopOf="@id/loginButton" />
+            app:layout_constraintBottom_toTopOf="@id/enterSignUpConfirmPassword" />
 
-        <Button
-            android:id="@+id/loginButton"
+        <EditText
+            android:id="@+id/enterSignUpConfirmPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/login"
+            android:ems="10"
+            android:hint="@string/confirm_password"
+            android:inputType="textPassword"
+            android:layout_marginTop="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/enterSignUpPassword"
+            app:layout_constraintBottom_toTopOf="@id/signupButton" />
+
+        <Button
+            android:id="@+id/signupButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/register"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginTop="40dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/enterPassword"
+            app:layout_constraintTop_toBottomOf="@+id/enterSignUpConfirmPassword"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
