@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.home;
+package com.example.myapplication.ui.dashboard;
 
 import android.app.Fragment;
 import android.net.Uri;
@@ -40,6 +40,7 @@ import retrofit2.Response;
 public class AnnouncementFragment extends Fragment {
 
     private FragmentAnnouncementBinding binding;
+    private String user_id;
     private String announcement_id;
     private String announcement_name;
     private String announcement_description;
@@ -74,6 +75,7 @@ public class AnnouncementFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.user_id = getArguments().getString("user_id");
         loadAnnouncementInfos(view);
     }
 

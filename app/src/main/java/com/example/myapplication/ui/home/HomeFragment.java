@@ -28,6 +28,7 @@ import org.json.JSONException;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
+    private String user_id;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.user_id = getArguments().getString("user_id");
         loadUserProfile(getView());
     }
 
@@ -59,7 +61,7 @@ public class HomeFragment extends Fragment {
         final TextView birthDateFill = view.findViewById(R.id.BirthDateFill);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/users/1";
+        String url ="http://10.0.2.2:3300/users/"+this.user_id;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {

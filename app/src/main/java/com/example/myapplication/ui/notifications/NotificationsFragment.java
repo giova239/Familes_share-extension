@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,8 +18,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentNotificationsBinding;
-import com.example.myapplication.ui.home.AnnouncementFragment;
-import com.example.myapplication.ui.home.CreateAnnouncementFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,12 +25,12 @@ import org.json.JSONException;
 public class NotificationsFragment extends Fragment {
 
     private FragmentNotificationsBinding binding;
-    private String subject;
+    private String user_id;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        this.subject = getArguments().getString("subject");
+        this.user_id = getArguments().getString("user_id");
         super.onCreate(savedInstanceState);
     }
 
@@ -60,10 +56,10 @@ public class NotificationsFragment extends Fragment {
 
     private void loadChats(View view){
         TextView title = view.findViewById(R.id.chatUser);
-        title.setText(this.subject);
+        title.setText(this.user_id);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/notifications/"+this.subject;
+        String url ="http://10.0.2.2:3300/notifications/"+this.user_id;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {

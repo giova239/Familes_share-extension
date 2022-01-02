@@ -10,32 +10,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentDashboardBinding;
-import com.example.myapplication.ui.home.GroupFragment;
-import com.example.myapplication.ui.home.HomeFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.w3c.dom.Text;
 
 public class DashboardFragment extends Fragment {
 
     private FragmentDashboardBinding binding;
+    private String user_id;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +46,7 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.user_id = getArguments().getString("user_id");
         loadGroupsOfUsers(getView());
     }
 
@@ -62,7 +55,7 @@ public class DashboardFragment extends Fragment {
         final LinearLayout insertHere = view.findViewById(R.id.linearLayout);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/usergroups/1";
+        String url ="http://10.0.2.2:3300/usergroups/"+this.user_id;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -108,6 +101,7 @@ public class DashboardFragment extends Fragment {
             Bundle b = new Bundle();
             b.putString("group_id", group_id);
             b.putString("group_name", group_name);
+            b.putString("user_id", this.user_id);
             f.setArguments(b);
             fs.replace(R.id.fragment_container, f);
             fs.addToBackStack("groups");

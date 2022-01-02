@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.home;
+package com.example.myapplication.ui.dashboard;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -40,6 +40,7 @@ import retrofit2.Response;
 public class GroupFragment extends Fragment {
 
     private FragmentGroupBinding binding;
+    private String user_id;
     private String group_id;
     private String group_name;
 
@@ -68,6 +69,7 @@ public class GroupFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.user_id = getArguments().getString("user_id");
         loadGroupInfos(view);
     }
 
@@ -110,6 +112,7 @@ public class GroupFragment extends Fragment {
                                     b.putString("announcement_name", json.getJSONObject(index).getString("title"));
                                     b.putString("announcement_description", json.getJSONObject(index).getString("description"));
                                     b.putString("announcement_id", json.getJSONObject(index).getString("category"));
+                                    b.putString("user_id", this.user_id);
                                 } catch (JSONException e) {
                                     System.out.println("error JSON" + e.toString());
                                 }
@@ -147,6 +150,7 @@ public class GroupFragment extends Fragment {
             CreateAnnouncementFragment f = new CreateAnnouncementFragment();
             Bundle b = new Bundle();
             b.putString("id_group", this.group_id);
+            b.putString("user_id", this.user_id);
             f.setArguments(b);
             fs.replace(R.id.fragment_container, f);
             fs.addToBackStack("announcements");

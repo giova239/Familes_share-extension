@@ -35,16 +35,23 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private String user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.user_id = getIntent().getStringExtra("user_id");
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
-        //load HOME fragment first
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+        //load DASHBOARD fragment first
+        HomeFragment f = new HomeFragment();
+        Bundle b = new Bundle();
+        b.putString("user_id", this.user_id);
+        f.setArguments(b);
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, f).commit();
 
         //NavBar change listener
         navView.setOnItemSelectedListener(item -> {
@@ -52,15 +59,27 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()){
                 case R.id.navigation_home:
                     //change to PROFILE fragment
-                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+                    HomeFragment f1 = new HomeFragment();
+                    Bundle b1 = new Bundle();
+                    b1.putString("user_id", this.user_id);
+                    f1.setArguments(b1);
+                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, f1).commit();
                     break;
                 case R.id.navigation_dashboard:
                     //change to GROUPS fragment
-                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new DashboardFragment()).commit();
+                    DashboardFragment f2 = new DashboardFragment();
+                    Bundle b2 = new Bundle();
+                    b2.putString("user_id", this.user_id);
+                    f2.setArguments(b2);
+                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, f2).commit();
                     break;
                 case R.id.navigation_notifications:
                     //change to CHATS fragment
-                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationsFragment()).commit();
+                    NotificationsFragment f3 = new NotificationsFragment();
+                    Bundle b3 = new Bundle();
+                    b3.putString("user_id", this.user_id);
+                    f3.setArguments(b3);
+                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, f3).commit();
                     break;
             }
 

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.home;
+package com.example.myapplication.ui.dashboard;
 
 import android.Manifest;
 import android.app.Activity;
@@ -50,6 +50,7 @@ import retrofit2.Call;
 public class CreateAnnouncementFragment extends Fragment {
 
     private FragmentCreateAnnouncementBinding binding;
+    private String user_id;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -76,6 +77,7 @@ public class CreateAnnouncementFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.group_id = getArguments().getString("id_group");
+        this.user_id = getArguments().getString("user_id");
         loadCreateAnnouncement(view);
     }
 
@@ -107,7 +109,7 @@ public class CreateAnnouncementFragment extends Fragment {
             //POST create announcement
             try {
                 RequestQueue queue = Volley.newRequestQueue(getContext());
-                String url ="http://10.0.2.2:3300/createAnnouncement/1";
+                String url ="http://10.0.2.2:3300/createAnnouncement/"+this.user_id;
                 JSONObject j = new JSONObject();
                 j.put("title", title);
                 j.put("description", description);
