@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -46,8 +47,14 @@ public class LoginActivity extends AppCompatActivity {
                         //LOG IN CORRECT
                         //Open home activity
                         Intent intent = new Intent(v.getContext(), MainActivity.class);
-                        intent.putExtra("user_id", "1");//TODO:CHANGE "1" with response.body.id
-                        startActivity(intent);
+                        try {
+                            JSONObject r = new JSONObject(response);
+                            String user_id = r.getString("id_user");
+                            intent.putExtra("user_id", user_id);
+                            startActivity(intent);
+                        } catch (JSONException jsonException) {
+                            jsonException.printStackTrace();
+                        }
                     },
                     error -> {
                         //LOG IN FAILED

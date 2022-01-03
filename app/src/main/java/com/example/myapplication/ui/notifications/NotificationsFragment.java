@@ -55,68 +55,18 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void loadChats(View view){
-        TextView title = view.findViewById(R.id.chatUser);
-        title.setText(this.user_id);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/notifications/"+this.user_id;
+        String url ="http://10.0.2.2:3300/chats/"+this.user_id;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
 
-                    JSONArray json;
-
                     System.out.println(response);
-                    try {
-                        json = new JSONArray(response);
 
-                        for(int i = 0; i < json.length(); i++){
-                            final int index = i;
-
-                            //Get Template
-                            LayoutInflater inflater = LayoutInflater.from(view.getContext());
-                            View layout = inflater.inflate(R.layout.notificationitem, null, false);
-
-                            //Change Chat User
-                            TextView chat_user = layout.findViewById(R.id.chatUser);
-                            chat_user.setText(json.getJSONObject(i).getString("interested"));
-
-                            //Set OnClickListener for chat item
-                            layout.setOnClickListener(v -> {
-                                FragmentTransaction fs = getFragmentManager().beginTransaction();
-                                NotificationsFragment f = new NotificationsFragment();
-                                Bundle b = new Bundle();
-                                try {
-                                    b.putString("chat_id", json.getJSONObject(index).getString("id_chat"));
-                                    b.putString("announcement_name", json.getJSONObject(index).getString("announcement"));
-                                    b.putString("subject", json.getJSONObject(index).getString("interested"));
-                                } catch (JSONException e) {
-                                    System.out.println("error JSON" + e.toString());
-                                }
-                                f.setArguments(b);
-                                fs.replace(R.id.fragment_container, f);
-                                fs.addToBackStack("notifications");
-                                fs.commit();
-                            });
-
-                            //Load chats
-                            LinearLayout linear = view.findViewById(R.id.fragment_notification);
-                            linear.addView(layout);
-
-                        }
-
-                    } catch (JSONException e) {
-                        System.out.println("error JSON" + e.toString());
-                    }
                 }, error -> {
 
-            //Get Template
-            LayoutInflater inflater = LayoutInflater.from(view.getContext());
-            View layout = inflater.inflate(R.layout.notificationitem, null, false);
-
-            //Load chats
-            LinearLayout linear = view.findViewById(R.id.fragment_notification);
-            linear.addView(layout);
+                    System.out.println(error);
 
         });
 
