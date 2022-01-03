@@ -2,8 +2,6 @@ const bcrypt = require("bcrypt");
 
 const client = require("../configs/database");
 
-const jwt = require("jsonwebtoken");
-
 //Login Function
 exports.login = async (req, res) => {
     const { email, password } = req.body;
@@ -22,15 +20,9 @@ exports.login = async (req, res) => {
                         error: "Server error",
                     });
                 } else if (result === true) { //Checking if credentials match
-                    const token = jwt.sign(
-                        {
-                            email: email,
-                        },
-                        process.env.SECRET_KEY
-                    );
                     res.status(200).json({
                         message: "User signed in!",
-                        token: token,
+                        id_user: user[0].id_user,
                     });
                 } else {
                     //Declaring the errors
