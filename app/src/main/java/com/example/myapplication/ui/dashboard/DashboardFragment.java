@@ -48,11 +48,12 @@ public class DashboardFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         this.user_id = getArguments().getString("user_id");
         loadGroupsOfUsers(getView());
+        loadGroupButtons(getView());
     }
 
     private void loadGroupsOfUsers(View view){
 
-        final LinearLayout insertHere = view.findViewById(R.id.linearLayout);
+        final LinearLayout insertHere = view.findViewById(R.id.GroupList);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url ="http://10.0.2.2:3300/usergroups/"+this.user_id;
@@ -81,6 +82,32 @@ public class DashboardFragment extends Fragment {
                 });
 
         queue.add(stringRequest);
+
+    }
+
+    private void loadGroupButtons(View view){
+
+        view.findViewById(R.id.createGroupButton).setOnClickListener(v -> {
+            FragmentTransaction fs = getFragmentManager().beginTransaction();
+            CreateGroupFragment f = new CreateGroupFragment();
+            Bundle b = new Bundle();
+            b.putString("user_id", this.user_id);
+            f.setArguments(b);
+            fs.replace(R.id.fragment_container, f);
+            fs.addToBackStack("announcements");
+            fs.commit();
+        });
+
+        view.findViewById(R.id.searchGroupButton).setOnClickListener(v -> {
+            FragmentTransaction fs = getFragmentManager().beginTransaction();
+            SearchGroupFragment f = new SearchGroupFragment();
+            Bundle b = new Bundle();
+            b.putString("user_id", this.user_id);
+            f.setArguments(b);
+            fs.replace(R.id.fragment_container, f);
+            fs.addToBackStack("announcements");
+            fs.commit();
+        });
 
     }
 

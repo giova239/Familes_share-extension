@@ -15,4 +15,5 @@
     <string name="name">Name</string>
     <string name="surname">Surname</string>
     <string name="birthdate">BirthDate</string>
+    <string name="search_here">Search here</string>
 </resources>

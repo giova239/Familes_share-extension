@@ -54,7 +54,6 @@ public class HomeFragment extends Fragment {
 
     private void loadUserProfile(View view){
 
-        final TextView usernameFill = view.findViewById(R.id.UsernameFill);
         final TextView emailFill = view.findViewById(R.id.EmailFill);
         final TextView nameFill = view.findViewById(R.id.NameFill);
         final TextView surnameFill = view.findViewById(R.id.SurnameFill);
@@ -71,8 +70,6 @@ public class HomeFragment extends Fragment {
                     System.out.println(response);
                     try {
                         json = new JSONArray(response);
-
-                        usernameFill.setText(json.getJSONObject(0).getString("username"));
                         emailFill.setText(json.getJSONObject(0).getString("email"));
                         nameFill.setText(json.getJSONObject(0).getString("name"));
                         surnameFill.setText(json.getJSONObject(0).getString("surname"));
@@ -82,7 +79,6 @@ public class HomeFragment extends Fragment {
                         System.out.println("error JSON" + e.toString());
                     }
                 }, error -> {
-                    usernameFill.setText("error 404");
                     emailFill.setText("error 404");
                     nameFill.setText("error 404");
                     surnameFill.setText("error 404");
