@@ -296,11 +296,11 @@ function insertUserGroup(id_user, id_group){
 app.post('/createGroup/:id', (req, res)=> {
     const group= req.body;
     let insertQuery = `insert into "Groups"(name, description)
-                        values('${group.name}', '${group.description}')
+                        values( $1 , $2 )
                         RETURNING id_group;`
 
     let id_user= `${req.params.id}`
-    client.query(insertQuery, (err, result)=>{
+    client.query(insertQuery, [group.name, group.description] , (err, result)=>{
         if(!err){
             insertUserGroup(id_user, result.rows[0].id_group);
             res.send(result.rows[0])
