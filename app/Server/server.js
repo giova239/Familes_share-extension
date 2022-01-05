@@ -78,7 +78,7 @@ app.post('/uploadimage', imageUpload.single('image'), (req, res) => {
 
 
 app.get("/getImage/:id", (req, res)=>{ //get first image of the announcement
-   client.query(`Select "Images".image_path from "Images" where "Images".id_announcement=${req.params.id} FETCH FIRST ROW ONLY`, (err, result)=>{
+   client.query(`Select "Images".image_path from "Images" where "Images".id_announcement=$1 FETCH FIRST ROW ONLY`, [req.params.id] ,(err, result)=>{
 
        if(!err && result.rows[0]){
           fs.readFile(result.rows[0].image_path, function (err, data) {
@@ -92,7 +92,7 @@ app.get("/getImage/:id", (req, res)=>{ //get first image of the announcement
 })
 
 app.get("/getImageByIndex/:id/:index", (req, res)=>{ //get first image of the announcement
-    client.query(`Select "Images".image_path from "Images" where "Images".id_announcement=${req.params.id}`, (err, result)=>{
+    client.query(`Select "Images".image_path from "Images" where "Images".id_announcement=$1 `,[req.params.id], (err, result)=>{
 
         if(!err && result.rows[req.params.index-1]){
             fs.readFile(result.rows[req.params.index-1].image_path, function (err, data) {
@@ -107,7 +107,7 @@ app.get("/getImageByIndex/:id/:index", (req, res)=>{ //get first image of the an
  })
 
  app.get('/getImageCount/:id', (req, res)=>{
-    client.query(`SELECT COUNT(*) AS ammount FROM "Images" where id_announcement=${req.params.id}`, (err, result)=>{
+    client.query(`SELECT COUNT(*) AS ammount FROM "Images" where id_announcement=$1`, [req.params.id], (err, result)=>{
         if(!err){
             res.send(result.rows);
         }
@@ -134,7 +134,7 @@ app.get('/groups', (req, res)=>{
 })
 
 app.get('/announcementListForGroup/:id', (req, res)=>{
-    client.query(`Select * from "AnnouncementsGroups" natural join "Announcements" where id_group=${req.params.id}`, (err, result)=>{
+    client.query(`Select * from "AnnouncementsGroups" natural join "Announcements" where id_group=$1 `,[req.params.id], (err, result)=>{
         if(!err){
             res.send(result.rows);
         }else{
@@ -163,7 +163,7 @@ app.get('/usersgroups', (req, res)=>{
 })
 
 app.get('/usergroups/:id', (req, res)=>{
-    client.query(`Select * from "UsersGroups","Groups" where id_user=${req.params.id} and "UsersGroups".id_group = "Groups".id_group`, (err, result)=>{
+    client.query(`Select * from "UsersGroups","Groups" where id_user=$1 and "UsersGroups".id_group = "Groups".id_group`, [req.params.id] ,(err, result)=>{
         if(!err){
             res.send(result.rows);
         }
@@ -172,7 +172,7 @@ app.get('/usergroups/:id', (req, res)=>{
 })
 
 app.get('/users/:id', (req, res)=>{
-    client.query(`Select *, to_char(birth_date, 'DD-MON-YYYY') as birth_date from "Users" where id_user=${req.params.id}`, (err, result)=>{
+    client.query(`Select *, to_char(birth_date, 'DD-MON-YYYY') as birth_date from "Users" where id_user=$1`, [req.params.id], (err, result)=>{
         if(!err){
             res.send(result.rows);
         }
@@ -181,14 +181,13 @@ app.get('/users/:id', (req, res)=>{
 })
 
 app.get('/notifications/:id', (req, res)=>{
-    client.query(`Select * from "Chats" where id_chat=${req.params.id}`, (err, result)=>{
+    client.query(`Select * from "Chats" where id_chat=$1`, [req.params.id],(err, result)=>{
         if(!err){
             res.send(result.rows);
         }
     });
     client.end;
 })
-
 
 const bodyParser = require("body-parser");
 const { Pool, _pools } = require('pg/lib');
@@ -197,10 +196,10 @@ app.use(bodyParser.json());
 
 app.post('/users', (req, res)=> { //Richieste post bisogna farle con postman
     const user = req.body;
-    let insertQuery = `insert into "Users"(id_user, username, name, surname, password, birth_date, email, phone, street, city, postal_code) 
-                        values(${user.id_user}, '${user.username}', '${user.name}', '${user.surname}', '${user.password}', '${user.birth_date}', '${user.email}',  '${user.phone}', '${user.street}', '${user.city}', '${user.postal_code}')`
+    let insertQuery = `insert into "Users"(id_user, username, name, surname, password, birth_date, email, phone, street, city, postal_code)
+                        values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`
 
-    client.query(insertQuery, (err, result)=>{
+    client.query(insertQuery,[user.id_user, user.username, user.name, user.surname, user.password, user.birth_date, user.email, user.phone, user.street, user.city, user.postal_code], (err, result)=>{
         if(!err){
             res.send('Insertion was successful')
         }
@@ -210,22 +209,22 @@ app.post('/users', (req, res)=> { //Richieste post bisogna farle con postman
 })
 
 function insertAnnGroup(new_id, id_group){
-    let insertNew_id = `insert into "AnnouncementsGroups"(id_announcement, id_group) 
-                        values(${new_id}, ${id_group})`
-    
-    client.query(insertNew_id, (err, result)=>{
+    let insertNew_id = `insert into "AnnouncementsGroups"(id_announcement, id_group)
+                        values($1, $2)`
+
+    client.query(insertNew_id,[new_id, id_group] ,(err, result)=>{
         if(err){ console.log(err.message) }
     })
-    client.end;     
+    client.end;
 }
 
-app.post('/createAnnouncement/:id', (req, res)=> { 
+app.post('/createAnnouncement/:id', (req, res)=> {
     const announcement = req.body;
-    let insertQuery = `insert into "Announcements"(title, description, type, creator) 
-                        values('${announcement.title}', '${announcement.description}', '${announcement.type}', ${req.params.id})
+    let insertQuery = `insert into "Announcements"(title, description, type, creator)
+                        values($1, $2, $3, $4)
                         RETURNING id_announcement;`
 
-    client.query(insertQuery, (err, result)=>{
+    client.query(insertQuery, [announcement.title,announcement.description, announcement.type, req.params.id], (err, result)=>{
         if(!err){
             insertAnnGroup(result.rows[0].id_announcement, announcement.id_group);
             res.send(result.rows[0])
@@ -233,15 +232,15 @@ app.post('/createAnnouncement/:id', (req, res)=> {
         else{ console.log(err.message) }
     })
     client.end;
-               
+
 })
 
-app.post('/groups', (req, res)=> { 
+app.post('/groups', (req, res)=> {
     const group = req.body;
-    let insertQuery = `insert into "Groups"(id_group, name, description) 
-                        values(${group.id_group}, '${group.name}', '${group.description}')`
+    let insertQuery = `insert into "Groups"(id_group, name, description)
+                        values($1, $2, $3)`
 
-    client.query(insertQuery, (err, result)=>{
+    client.query(insertQuery,[group.id_group, group.name, group.description] , (err, result)=>{
         if(!err){
             res.send('Insertion was successful')
         }
@@ -250,12 +249,12 @@ app.post('/groups', (req, res)=> {
     client.end;
 })
 
-app.post('/usersgroups', (req, res)=> { 
+app.post('/usersgroups', (req, res)=> {
     const usergroup = req.body;
-    let insertQuery = `insert into "UsersGroups"(id_user, id_group) 
-                        values(${usergroup.id_user}, ${usergroup.id_group})`
+    let insertQuery = `insert into "UsersGroups"(id_user, id_group)
+                        values($1, $2)`
 
-    client.query(insertQuery, (err, result)=>{
+    client.query(insertQuery, [usergroup.id_user, usergroup.id_group] ,(err, result)=>{
         if(!err){
             res.send('Insertion was successful')
         }
@@ -285,9 +284,9 @@ app.get('/allGroups', (req, res)=>{
 
 function insertUserGroup(id_user, id_group){
     let insertNew_id = `insert into "UsersGroups"(id_user, id_group)
-                        values(${id_user}, ${id_group})`
+                        values($1, $2)`
 
-    client.query(insertNew_id, (err, result)=>{
+    client.query(insertNew_id, [id_user, id_group],(err, result)=>{
         if(err){ console.log(err.message) }
     })
     client.end;
@@ -310,29 +309,12 @@ app.post('/createGroup/:id', (req, res)=> {
     client.end;
 })
 
-app.post('/createAnnouncement/:id', (req, res)=> {
-    const announcement = req.body;
-    let insertQuery = `insert into "Announcements"(title, description, type, creator)
-                        values('${announcement.title}', '${announcement.description}', '${announcement.type}', ${req.params.id})
-                        RETURNING id_announcement;`
-
-    client.query(insertQuery, (err, result)=>{
-        if(!err){
-            insertAnnGroup(result.rows[0].id_announcement, announcement.id_group);
-            res.send(result.rows[0])
-        }
-        else{ console.log(err.message) }
-    })
-    client.end;
-
-})
-
 app.post('/joinGroup', (req, res)=> {
     const usergroup = req.body;
     let insertQuery = `insert into "UsersGroups"(id_user, id_group)
-                        values(${usergroup.user_id}, ${usergroup.group_id})`
+                        values($1, $2)`
 
-    client.query(insertQuery, (err, result)=>{
+    client.query(insertQuery, [usergroup.user_id, usergroup.group_id], (err, result)=>{
         if(!err){
             res.send('Insertion was successful');
         }
