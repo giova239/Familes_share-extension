@@ -326,3 +326,17 @@ app.post('/createAnnouncement/:id', (req, res)=> {
     client.end;
 
 })
+
+app.post('/joinGroup', (req, res)=> {
+    const usergroup = req.body;
+    let insertQuery = `insert into "UsersGroups"(id_user, id_group)
+                        values(${usergroup.user_id}, ${usergroup.group_id})`
+
+    client.query(insertQuery, (err, result)=>{
+        if(!err){
+            res.send('Insertion was successful');
+        }
+        else{ console.log(err.message) }
+    })
+    client.end;
+})
