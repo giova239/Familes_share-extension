@@ -3,6 +3,7 @@ package com.example.myapplication.ui.login;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +35,8 @@ public class LoginActivity extends AppCompatActivity {
         EditText email = findViewById(R.id.enterEmail);
         EditText password = findViewById(R.id.enterPassword);
 
+        loadLastUsedCredentials(email, password);
+
         login.setOnClickListener(v -> {
 
             String e = email.getText().toString();
@@ -45,6 +48,12 @@ public class LoginActivity extends AppCompatActivity {
             StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                     response -> {
                         //LOG IN CORRECT
+                        //save login data
+                        SharedPreferences sp=getSharedPreferences("Login", MODE_PRIVATE);
+                        SharedPreferences.Editor Ed=sp.edit();
+                        Ed.putString("mail", e);
+                        Ed.putString("pswd",p);
+                        Ed.commit();
                         //Open home activity
                         Intent intent = new Intent(v.getContext(), MainActivity.class);
                         try {
@@ -89,6 +98,16 @@ public class LoginActivity extends AppCompatActivity {
 
         });
 
+    }
+
+    private void loadLastUsedCredentials(EditText enterMail, EditText enterPswd) {
+        SharedPreferences sp1 = this.getSharedPreferences("Login", MODE_PRIVATE);
+
+        String mail = sp1.getString("mail", "");
+        String pswd = sp1.getString("pswd", "");
+
+        enterMail.setText(mail);
+        enterPswd.setText(pswd);
     }
 
 }
