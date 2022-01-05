@@ -23,8 +23,10 @@ import com.android.volley.toolbox.Volley;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -76,62 +78,77 @@ public class RegistrationActivity extends AppCompatActivity {
             String p = password.getText().toString();
             String c = confirmPassword.getText().toString();
 
-            RequestQueue queue = Volley.newRequestQueue(this);
-            String url = "http://10.0.2.2:3300/user/register";
+            if(p.equals(c)){
+                RequestQueue queue = Volley.newRequestQueue(this);
+                String url = "http://10.0.2.2:3300/user/register";
 
-            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                    new Response.Listener<String>()
-                    {
-                        @Override
-                        public void onResponse(String response) {
-                            // response
-                            System.out.println("Response:" + response);
+                StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>()
+                        {
+                            @Override
+                            public void onResponse(String response) {
+                                // response
+                                System.out.println("Response:" + response);
 
-                            //Close Registration activity
-                            Toast.makeText(v.getContext(), "Registration Successful", Toast.LENGTH_SHORT).show();
-                            Activity a = (Activity) v.getContext();
-                            a.finish();
+                                //Close Registration activity
+                                Toast.makeText(v.getContext(), "Registration Successful", Toast.LENGTH_SHORT).show();
+                                Activity a = (Activity) v.getContext();
+                                a.finish();
+                            }
+                        },
+                        new Response.ErrorListener()
+                        {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                String body;
+                                //get status code here
+                                String statusCode = String.valueOf(error.networkResponse.statusCode);
+                                //get response body and parse with appropriate encoding
+                                if(error.networkResponse.data!=null) {
+                                    try {
+                                        body = new String(error.networkResponse.data,"UTF-8");
+                                        JSONObject b = new JSONObject(body);
+                                        System.out.println("Error Response: " + b.getString("error"));
+                                        Toast.makeText(v.getContext(), b.getString("error"), Toast.LENGTH_SHORT).show();
+                                    } catch (UnsupportedEncodingException | JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
                         }
-                    },
-                    new Response.ErrorListener()
-                    {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // error
-                            System.out.println("Error Response: " + error);
-                            Toast.makeText(v.getContext(), "Error 404", Toast.LENGTH_SHORT).show();
-                        }
+                ) {
+
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+
+                        Map<String, String>  params = new HashMap<String, String>();
+
+                        params.put("name", n);
+                        params.put("surname", s);
+                        params.put("email", e);
+                        params.put("birth_date", b);
+                        params.put("password", p);
+
+                        return new JSONObject(params).toString().getBytes();
                     }
-            ) {
 
-                @Override
-                public byte[] getBody() throws AuthFailureError {
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json";
+                    }
 
-                    Map<String, String>  params = new HashMap<String, String>();
-
-                    params.put("name", n);
-                    params.put("surname", s);
-                    params.put("email", e);
-                    params.put("birth_date", b);
-                    params.put("password", p);
-
-                    return new JSONObject(params).toString().getBytes();
-                }
-
-                @Override
-                public String getBodyContentType() {
-                    return "application/json";
-                }
-
-            };
-            queue.add(postRequest);
+                };
+                queue.add(postRequest);
+            }else{
+                Toast.makeText(v.getContext(), "Passwords don't match", Toast.LENGTH_SHORT).show();
+            }
 
         });
 
     }
 
     private void updateLabel(){
-        String myFormat="dd/MM/yyyy";
+        String myFormat="yyyy/MM/dd";
         SimpleDateFormat dateFormat=new SimpleDateFormat(myFormat, Locale.US);
         this.birthDate.setText(dateFormat.format(myCalendar.getTime()));
     }
