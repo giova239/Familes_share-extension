@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -101,6 +103,25 @@ public class SearchGroupFragment extends Fragment {
                             }
                         });
 
+                        this.lw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view,
+                                                    int position, long id) {
+
+                                try {
+                                    String groupId = json.getJSONObject(position).getString("id_group");
+                                    String groupDescription = json.getJSONObject(position).getString("description");
+                                    String groupName = json.getJSONObject(position).getString("name");
+                                    loadJoinGroupFragment(groupId, groupDescription, groupName);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+
+                        });
+
                     } catch (JSONException e) {
                         System.out.println("error JSON" + e.toString());
                     }
@@ -109,5 +130,19 @@ public class SearchGroupFragment extends Fragment {
         });
 
         queue.add(stringRequest);
+    }
+
+    private void loadJoinGroupFragment(String groupId, String groupDescription, String groupName) {
+        FragmentTransaction fs = getFragmentManager().beginTransaction();
+        JoinGroupFragment f = new JoinGroupFragment();
+        Bundle b = new Bundle();
+        b.putString("group_id", groupId);
+        b.putString("group_name", groupName);
+        b.putString("group_description", groupDescription);
+        b.putString("user_id", this.user_id);
+        f.setArguments(b);
+        fs.replace(R.id.fragment_container, f);
+        fs.addToBackStack("groups");
+        fs.commit();
     }
 }
