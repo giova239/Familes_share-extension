@@ -27,42 +27,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_margin="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imageProfile">
 
             <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Your chats"
+                android:padding="20dp"
                 android:textAllCaps="true"
                 android:textSize="30dp"
+                android:background="@drawable/border"
                 android:textColor="#FFFFFF"
-                android:textAlignment="center"/>
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:text="Mario Rossi (Classe 5B)"
-                android:textColor="@color/black"
-                tools:ignore="HardcodedText"
-                android:textSize="20dp"
-                android:textAlignment="center"/>
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:text="Lucia Bianchi (anno 2007 Martellago)"
-                android:textColor="@color/black"
-                tools:ignore="HardcodedText"
-                android:textSize="20dp"
                 android:textAlignment="center"/>
 
         </LinearLayout>

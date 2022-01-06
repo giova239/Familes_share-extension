@@ -19,22 +19,25 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.myapplication.R;
-import com.example.myapplication.databinding.FragmentNotificationsBinding;
-import com.example.myapplication.ui.dashboard.GroupFragment;
+import com.example.myapplication.databinding.FragmentChatBinding;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class NotificationsFragment extends Fragment {
+public class ChatFragment extends Fragment {
 
-    private FragmentNotificationsBinding binding;
+    private FragmentChatBinding binding;
     private String user_id;
+    private String chat_id;
+    private String chat_name;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         this.user_id = getArguments().getString("user_id");
+        this.chat_id = getArguments().getString("chat_id");
+        this.chat_name = getArguments().getString("chat_name");
         super.onCreate(savedInstanceState);
     }
 
@@ -42,7 +45,7 @@ public class NotificationsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        binding = FragmentChatBinding.inflate(inflater, container, false);
 
         return binding.getRoot();
     }
@@ -55,19 +58,24 @@ public class NotificationsFragment extends Fragment {
 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadChats(view);
+        loadMessages(view);
     }
 
-    private void loadChats(View view){
+    private void loadMessages(View view){
+
+        LinearLayout message_list = view.findViewById(R.id.message_list);
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+
+        //add user profile bar
+        ConstraintLayout profile = (ConstraintLayout) inflater.inflate(R.layout.chat_image, null, false);
+        ((TextView) profile.findViewById(R.id.chat_name)).setText(this.chat_name);
+        message_list.addView(profile);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/chats/"+this.user_id;
+        String url ="http://10.0.2.2:3300/getAllMessages/;"+this.chat_id;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
-
-                    LinearLayout chat_list = view.findViewById(R.id.chat_list);
-                    LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
                     try {
 
@@ -75,23 +83,17 @@ public class NotificationsFragment extends Fragment {
 
                         for(int i = 0; i < json.length(); i++){
 
-                            ConstraintLayout elem = (ConstraintLayout) inflater.inflate(R.layout.chat_image, null, false);
-                            ((TextView) elem.findViewById(R.id.chat_name)).setText(json.getJSONObject(i).getString("name"));
+                            //add messages
+                            ConstraintLayout message;
 
-                            elem.setOnClickListener(v -> {
-                                FragmentTransaction fs = getFragmentManager().beginTransaction();
-                                ChatFragment f = new ChatFragment();
-                                Bundle b = new Bundle();
-                                b.putString("chat_id", "1");//TODO:FIX
-                                b.putString("chat_name", "PROVA");//TODO:FIX
-                                b.putString("user_id", this.user_id);
-                                f.setArguments(b);
-                                fs.replace(R.id.fragment_container, f);
-                                fs.addToBackStack("chats");
-                                fs.commit();
-                            });
+                            if(this.user_id == json.getJSONObject(i).getString("sender")){
+                                message = (ConstraintLayout) inflater.inflate(R.layout.sender_message, null, false);
+                            }else{
+                                message = (ConstraintLayout) inflater.inflate(R.layout.receiver_message, null, false);
+                            }
 
-                            chat_list.addView(elem);
+                            ((TextView) message.findViewById(R.id.chat_message)).setText(json.getJSONObject(i).getString("message"));
+                            message_list.addView(message);
 
                         }
 
@@ -101,7 +103,7 @@ public class NotificationsFragment extends Fragment {
 
                 }, error -> {
 
-                    Toast.makeText(view.getContext(), "Couldn't load chats", Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(), "Couldn't load chats", Toast.LENGTH_SHORT).show();
 
         });
 
