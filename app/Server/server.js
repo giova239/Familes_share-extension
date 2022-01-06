@@ -134,7 +134,7 @@ app.get('/groups', (req, res)=>{
 })
 
 app.get('/announcementListForGroup/:id', (req, res)=>{
-    client.query(`Select * from "AnnouncementsGroups" natural join "Announcements" where id_group=$1 `,[req.params.id], (err, result)=>{
+    client.query(`Select * from "AnnouncementsGroups" natural join "Announcements" join "Users" on "Users".id_user = "Announcements".creator where id_group=$1 `,[req.params.id], (err, result)=>{
         if(!err){
             res.send(result.rows);
         }else{
@@ -322,3 +322,91 @@ app.post('/joinGroup', (req, res)=> {
     })
     client.end;
 })
+
+
+app.post('/createChat', (req, res)=> {
+    const user = req.body;
+    let insertQuery = `Select id_chat, count(*) as r from "Chats" where ("Chats".user1 = $1 and "Chats".user2 = $2) or ("Chats".user1 = $2 and "Chats".user2 = $1) GROUP BY id_chat`
+
+    client.query(insertQuery, [user.user1, user.user2], (err, rows,result)=>{
+        if(!err){
+            if(rows.rows[0].r==0){
+                let insertQuery2 = `insert into "Chats"(user1, user2)
+                                   values($1, $2)
+                                   RETURNING id_chat`;
+
+                client.query(insertQuery2, [user.user1, user.user2], (err, result)=>{
+                    if(!err){
+                        res.status(200).json({
+                            message: "Insertion was successful",
+                            id_chat: result.rows[0].id_chat,
+                        });
+                    }
+                    else{ console.log(err.message) }
+                })
+                client.end;
+            }else{
+                res.status(200).json({
+                    message: "Utenti già presenti",
+                    id_chat: rows.rows[0].id_chat,
+                });
+            }
+        }else{ console.log(err.message) }
+    })
+    client.end;
+})
+
+app.post('/allUserchat', (req, res)=> {
+    const user = req.body;
+    let insertQuery = `Select * from "Chats" join "Users" on "Chats".user1 = "Users".id_user where "Chats".user2=$1
+                       UNION
+                       Select * from "Chats" join "Users" on "Chats".user2 = "Users".id_user where "Chats".user1=$1 `
+
+    client.query(insertQuery, [user.user1] , (err, result)=>{
+        if(!err){
+            res.send(result.rows)
+        }
+        else{ console.log(err.message) }
+    })
+    client.end;
+})
+
+app.post('/getAllMessages', (req, res)=> {
+    const message = req.body;
+    let insertQuery = `Select * from "Messages" where "Messages".chat=$1 ORDER BY date_time`
+
+    client.query(insertQuery, [message.id_chat] , (err, result)=>{
+        if(!err){
+            res.send(result.rows)
+        }
+        else{ console.log(err.message) }
+    })
+    client.end;
+})
+
+app.post('/sendMessage', (req, res)=> {
+    const message = req.body;
+    let insertQuery = `insert into "Messages"(text, chat, sender, date_time)
+                       values($1, $2, $3, $4)`
+
+    var datetime= new Date();
+
+    client.query(insertQuery, [message.text, message.chat, message.sender, datetime] , (err, result)=>{
+        if(!err){
+            res.send("Insertion was successful");
+        }
+        else{ console.log(err.message) }
+    })
+    client.end;
+})
+
+
+
+
+
+
+
+
+
+
+
