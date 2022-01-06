@@ -8,9 +8,20 @@
     tools:context=".ui.notifications.NotificationsFragment"
     android:background="@drawable/background">
 
+    <LinearLayout
+        android:id="@+id/profile_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:background="@drawable/border2"
+        android:layout_alignParentTop="true">
+    </LinearLayout>
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/chat"
         android:layout_above="@id/enterMessage"
+        android:layout_below="@id/profile_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
@@ -39,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="100dp"
         android:layout_marginLeft="20dp"
         android:ems="14"
         android:hint="Type Message"
@@ -55,7 +66,7 @@
         android:backgroundTint="@color/design_default_color_secondary"
         android:drawableTint="@color/design_default_color_secondary"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="100dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"/>
 

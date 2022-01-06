@@ -60,8 +60,6 @@ public class CreateGroupFragment extends Fragment {
             String name = ((EditText) getView().findViewById(R.id.enterNewGroupName)).getText().toString();
             String desc = ((EditText) getView().findViewById(R.id.enterNewGroupDescription)).getText().toString();
 
-            Toast.makeText(v.getContext(), name+desc, Toast.LENGTH_SHORT).show();
-
             //create group
             RequestQueue queue = Volley.newRequestQueue(v.getContext());
             String url = "http://10.0.2.2:3300/createGroup/"+this.user_id;

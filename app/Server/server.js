@@ -326,11 +326,11 @@ app.post('/joinGroup', (req, res)=> {
 
 app.post('/createChat', (req, res)=> {
     const user = req.body;
-    let insertQuery = `Select id_chat, count(*) as r from "Chats" where ("Chats".user1 = $1 and "Chats".user2 = $2) or ("Chats".user1 = $2 and "Chats".user2 = $1) GROUP BY id_chat`
+    let insertQuery = `Select id_chat from "Chats" where ("Chats".user1 = $1 and "Chats".user2 = $2) or ("Chats".user1 = $2 and "Chats".user2 = $1)`
 
     client.query(insertQuery, [user.user1, user.user2], (err, rows,result)=>{
         if(!err){
-            if(rows.rows[0].r==0){
+            if(!rows.rows[0]){
                 let insertQuery2 = `insert into "Chats"(user1, user2)
                                    values($1, $2)
                                    RETURNING id_chat`;
@@ -356,13 +356,13 @@ app.post('/createChat', (req, res)=> {
     client.end;
 })
 
-app.post('/allUserchat', (req, res)=> {
-    const user = req.body;
+app.get('/getUserChats/:id', (req, res)=> {
+    const user = req.params;
     let insertQuery = `Select * from "Chats" join "Users" on "Chats".user1 = "Users".id_user where "Chats".user2=$1
                        UNION
                        Select * from "Chats" join "Users" on "Chats".user2 = "Users".id_user where "Chats".user1=$1 `
 
-    client.query(insertQuery, [user.user1] , (err, result)=>{
+    client.query(insertQuery, [user.id] , (err, result)=>{
         if(!err){
             res.send(result.rows)
         }
@@ -371,11 +371,11 @@ app.post('/allUserchat', (req, res)=> {
     client.end;
 })
 
-app.post('/getAllMessages', (req, res)=> {
-    const message = req.body;
+app.get('/getAllMessages/:id', (req, res)=> {
+    const message = req.params;
     let insertQuery = `Select * from "Messages" where "Messages".chat=$1 ORDER BY date_time`
 
-    client.query(insertQuery, [message.id_chat] , (err, result)=>{
+    client.query(insertQuery, [message.id] , (err, result)=>{
         if(!err){
             res.send(result.rows)
         }

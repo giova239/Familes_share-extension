@@ -61,7 +61,7 @@ public class NotificationsFragment extends Fragment {
     private void loadChats(View view){
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/chats/"+this.user_id;
+        String url ="http://10.0.2.2:3300/getUserChats/"+this.user_id;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -76,14 +76,20 @@ public class NotificationsFragment extends Fragment {
                         for(int i = 0; i < json.length(); i++){
 
                             ConstraintLayout elem = (ConstraintLayout) inflater.inflate(R.layout.chat_image, null, false);
-                            ((TextView) elem.findViewById(R.id.chat_name)).setText(json.getJSONObject(i).getString("name"));
+                            String s = json.getJSONObject(i).getString("name")+" "+json.getJSONObject(i).getString("surname");
+                            ((TextView) elem.findViewById(R.id.chat_name)).setText(s);
+                            final int index = i;
 
                             elem.setOnClickListener(v -> {
                                 FragmentTransaction fs = getFragmentManager().beginTransaction();
                                 ChatFragment f = new ChatFragment();
                                 Bundle b = new Bundle();
-                                b.putString("chat_id", "1");//TODO:FIX
-                                b.putString("chat_name", "PROVA");//TODO:FIX
+                                try {
+                                    b.putString("chat_id", json.getJSONObject(index).getString("id_chat"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                b.putString("chat_name", s);
                                 b.putString("user_id", this.user_id);
                                 f.setArguments(b);
                                 fs.replace(R.id.fragment_container, f);

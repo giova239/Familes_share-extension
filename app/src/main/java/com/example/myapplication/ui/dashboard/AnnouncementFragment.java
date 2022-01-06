@@ -54,6 +54,7 @@ public class AnnouncementFragment extends Fragment {
     private String announcement_description;
     private String announcement_type;
     private String announcement_creator;
+    private String creator_id;
     private SliderView imgSlider;
     private List<Uri> images = new LinkedList<>();
 
@@ -64,6 +65,7 @@ public class AnnouncementFragment extends Fragment {
         this.announcement_description = getArguments().getString("announcement_description");
         this.announcement_type = getArguments().getString("announcement_type");
         this.announcement_creator = getArguments().getString("announcement_creator");
+        this.creator_id = getArguments().getString("creator_id");
         super.onCreate(savedInstanceState);
     }
 
@@ -139,7 +141,7 @@ public class AnnouncementFragment extends Fragment {
                     Map<String, String> params = new HashMap<String, String>();
 
                     params.put("user1", user_id);
-                    params.put("user2", announcement_creator);
+                    params.put("user2", creator_id);
 
                     return new JSONObject(params).toString().getBytes();
                 }

@@ -71,15 +71,16 @@ public class ChatFragment extends Fragment {
     private void loadMessages(View view){
 
         LinearLayout message_list = view.findViewById(R.id.message_list);
+        LinearLayout profile_bar = view.findViewById(R.id.profile_bar);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
         //add user profile bar
         ConstraintLayout profile = (ConstraintLayout) inflater.inflate(R.layout.chat_image, null, false);
         ((TextView) profile.findViewById(R.id.chat_name)).setText(this.chat_name);
-        message_list.addView(profile);
+        profile_bar.addView(profile);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/getAllMessages/;"+this.chat_id;
+        String url ="http://10.0.2.2:3300/getAllMessages/"+this.chat_id;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -93,13 +94,15 @@ public class ChatFragment extends Fragment {
                             //add messages
                             ConstraintLayout message;
 
-                            if(this.user_id == json.getJSONObject(i).getString("sender")){
+                            if(this.user_id.equals(json.getJSONObject(i).getString("sender"))){
                                 message = (ConstraintLayout) inflater.inflate(R.layout.sender_message, null, false);
                             }else{
                                 message = (ConstraintLayout) inflater.inflate(R.layout.receiver_message, null, false);
                             }
 
-                            ((TextView) message.findViewById(R.id.chat_message)).setText(json.getJSONObject(i).getString("message"));
+                            System.out.println(json);
+
+                            ((TextView) message.findViewById(R.id.chat_message)).setText(json.getJSONObject(i).getString("text"));
                             message_list.addView(message);
 
                         }
@@ -122,7 +125,7 @@ public class ChatFragment extends Fragment {
         b.setOnClickListener(v -> {
 
             //Retrive Message
-            EditText enterMessage = v.findViewById(R.id.enterMessage);
+            EditText enterMessage = view.findViewById(R.id.enterMessage);
             String msg = enterMessage.getText().toString();
 
             //Send Message
@@ -135,11 +138,12 @@ public class ChatFragment extends Fragment {
                         Toast.makeText(v.getContext(), "Message Sent", Toast.LENGTH_SHORT).show();
 
                         //show message
-                        LinearLayout message_list = v.findViewById(R.id.message_list);
+                        LinearLayout message_list = view.findViewById(R.id.message_list);
                         LayoutInflater inflater = LayoutInflater.from(v.getContext());
                         ConstraintLayout newMessage = (ConstraintLayout) inflater.inflate(R.layout.sender_message, null, false);
                         ((TextView) newMessage.findViewById(R.id.chat_message)).setText(msg);
                         message_list.addView(newMessage);
+                        enterMessage.setText("");
 
                     },
                     error -> {
@@ -154,7 +158,7 @@ public class ChatFragment extends Fragment {
 
                     params.put("chat", chat_id);
                     params.put("sender", user_id);
-                    params.put("message", msg);
+                    params.put("text", msg);
 
                     return new JSONObject(params).toString().getBytes();
                 }
