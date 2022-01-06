@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -24,6 +27,9 @@ import com.example.myapplication.databinding.FragmentChatBinding;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChatFragment extends Fragment {
 
@@ -59,6 +65,7 @@ public class ChatFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadMessages(view);
+        loadSendMessageButton(view);
     }
 
     private void loadMessages(View view){
@@ -109,4 +116,56 @@ public class ChatFragment extends Fragment {
 
         queue.add(stringRequest);
     }
+
+    private void loadSendMessageButton(View view) {
+        Button b = view.findViewById(R.id.sendMessage);
+        b.setOnClickListener(v -> {
+
+            //Retrive Message
+            EditText enterMessage = v.findViewById(R.id.enterMessage);
+            String msg = enterMessage.getText().toString();
+
+            //Send Message
+            RequestQueue queue = Volley.newRequestQueue(v.getContext());
+            String url = "http://10.0.2.2:3300/sendMessage";
+
+            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                    response -> {
+                        //create CHAT CORRECT
+                        Toast.makeText(v.getContext(), "Message Sent", Toast.LENGTH_SHORT).show();
+
+                        //show message
+                        LinearLayout message_list = v.findViewById(R.id.message_list);
+                        LayoutInflater inflater = LayoutInflater.from(v.getContext());
+                        ConstraintLayout newMessage = (ConstraintLayout) inflater.inflate(R.layout.sender_message, null, false);
+                        ((TextView) newMessage.findViewById(R.id.chat_message)).setText(msg);
+                        message_list.addView(newMessage);
+
+                    },
+                    error -> {
+                        //create CHAT FAILED
+                        Toast.makeText(v.getContext(), "Couldn't Send the message", Toast.LENGTH_SHORT).show();
+                    }
+            ) {
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+
+                    Map<String, String> params = new HashMap<String, String>();
+
+                    params.put("chat", chat_id);
+                    params.put("sender", user_id);
+                    params.put("message", msg);
+
+                    return new JSONObject(params).toString().getBytes();
+                }
+
+                @Override
+                public String getBodyContentType() {
+                    return "application/json";
+                }
+            };
+            queue.add(postRequest);
+        });
+    }
+
 }
