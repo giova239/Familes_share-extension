@@ -326,34 +326,41 @@ app.post('/joinGroup', (req, res)=> {
 
 app.post('/createChat', (req, res)=> {
     const user = req.body;
-    let insertQuery = `Select id_chat from "Chats" where ("Chats".user1 = $1 and "Chats".user2 = $2) or ("Chats".user1 = $2 and "Chats".user2 = $1)`
 
-    client.query(insertQuery, [user.user1, user.user2], (err, rows,result)=>{
-        if(!err){
-            if(!rows.rows[0]){
-                let insertQuery2 = `insert into "Chats"(user1, user2)
-                                   values($1, $2)
-                                   RETURNING id_chat`;
+    if(user.user1 === user.user2){
+        res.status(400).json({
+            message: "Non puoi scrivere a te stesso!",
+        });
+    }else{
+        let insertQuery = `Select id_chat from "Chats" where ("Chats".user1 = $1 and "Chats".user2 = $2) or ("Chats".user1 = $2 and "Chats".user2 = $1)`
 
-                client.query(insertQuery2, [user.user1, user.user2], (err, result)=>{
-                    if(!err){
-                        res.status(200).json({
-                            message: "Insertion was successful",
-                            id_chat: result.rows[0].id_chat,
-                        });
-                    }
-                    else{ console.log(err.message) }
-                })
-                client.end;
-            }else{
-                res.status(200).json({
-                    message: "Utenti già presenti",
-                    id_chat: rows.rows[0].id_chat,
-                });
-            }
-        }else{ console.log(err.message) }
-    })
-    client.end;
+        client.query(insertQuery, [user.user1, user.user2], (err, rows,result)=>{
+            if(!err){
+                if(!rows.rows[0]){
+                    let insertQuery2 = `insert into "Chats"(user1, user2)
+                                       values($1, $2)
+                                       RETURNING id_chat`;
+
+                    client.query(insertQuery2, [user.user1, user.user2], (err, result)=>{
+                        if(!err){
+                            res.status(200).json({
+                                message: "Insertion was successful",
+                                id_chat: result.rows[0].id_chat,
+                            });
+                        }
+                        else{ console.log(err.message) }
+                    })
+                    client.end;
+                }else{
+                    res.status(200).json({
+                        message: "Utenti già presenti",
+                        id_chat: rows.rows[0].id_chat,
+                    });
+                }
+            }else{ console.log(err.message) }
+        })
+        client.end;
+    }
 })
 
 app.get('/getUserChats/:id', (req, res)=> {

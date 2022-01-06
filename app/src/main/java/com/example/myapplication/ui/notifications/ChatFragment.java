@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -107,6 +109,14 @@ public class ChatFragment extends Fragment {
 
                         }
 
+                        NestedScrollView s = view.findViewById(R.id.chat);
+                        s.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                s.fullScroll(ScrollView.FOCUS_DOWN);
+                            }
+                        });
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -134,6 +144,7 @@ public class ChatFragment extends Fragment {
 
             StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                     response -> {
+
                         //create CHAT CORRECT
                         Toast.makeText(v.getContext(), "Message Sent", Toast.LENGTH_SHORT).show();
 
@@ -144,6 +155,15 @@ public class ChatFragment extends Fragment {
                         ((TextView) newMessage.findViewById(R.id.chat_message)).setText(msg);
                         message_list.addView(newMessage);
                         enterMessage.setText("");
+
+                        //scroll down
+                        NestedScrollView s = view.findViewById(R.id.chat);
+                        s.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                s.fullScroll(ScrollView.FOCUS_DOWN);
+                            }
+                        });
 
                     },
                     error -> {
