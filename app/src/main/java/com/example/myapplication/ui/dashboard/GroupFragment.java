@@ -111,7 +111,8 @@ public class GroupFragment extends Fragment {
                                     b.putString("announcement_id", json.getJSONObject(index).getString("id_announcement"));
                                     b.putString("announcement_name", json.getJSONObject(index).getString("title"));
                                     b.putString("announcement_description", json.getJSONObject(index).getString("description"));
-                                    b.putString("announcement_id", json.getJSONObject(index).getString("category"));
+                                    b.putString("announcement_type", json.getJSONObject(index).getString("type"));
+                                    b.putString("announcement_creator", json.getJSONObject(index).getString("name")+" "+json.getJSONObject(index).getString("surname"));
                                     b.putString("user_id", this.user_id);
                                 } catch (JSONException e) {
                                     System.out.println("error JSON" + e.toString());

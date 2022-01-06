@@ -1,16 +1,20 @@
 package com.example.myapplication.ui.dashboard;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -19,18 +23,22 @@ import com.example.myapplication.R;
 import com.example.myapplication.Retrofit.ServiceGenerator;
 import com.example.myapplication.Retrofit.TransferImageService;
 import com.example.myapplication.databinding.FragmentAnnouncementBinding;
+import com.example.myapplication.ui.notifications.ChatFragment;
 import com.smarteist.autoimageslider.SliderView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -44,7 +52,8 @@ public class AnnouncementFragment extends Fragment {
     private String announcement_id;
     private String announcement_name;
     private String announcement_description;
-    private String announcement_category;
+    private String announcement_type;
+    private String announcement_creator;
     private SliderView imgSlider;
     private List<Uri> images = new LinkedList<>();
 
@@ -53,7 +62,8 @@ public class AnnouncementFragment extends Fragment {
         this.announcement_id = getArguments().getString("announcement_id");
         this.announcement_name = getArguments().getString("announcement_name");
         this.announcement_description = getArguments().getString("announcement_description");
-        this.announcement_category = getArguments().getString("announcement_category");
+        this.announcement_type = getArguments().getString("announcement_type");
+        this.announcement_creator = getArguments().getString("announcement_creator");
         super.onCreate(savedInstanceState);
     }
 
@@ -77,6 +87,7 @@ public class AnnouncementFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         this.user_id = getArguments().getString("user_id");
         loadAnnouncementInfos(view);
+        loadAnswerMessageButton(view);
     }
 
     private void loadAnnouncementInfos(View view){
@@ -86,6 +97,61 @@ public class AnnouncementFragment extends Fragment {
         desc.setText(this.announcement_description);
         this.imgSlider = view.findViewById(R.id.imageSlider);
         downloadAllImages(this.announcement_id);
+    }
+
+    private void loadAnswerMessageButton(View view) {
+        Button b = view.findViewById(R.id.answerAnnouncementButton);
+        b.setOnClickListener(v -> {
+
+            //create conversation
+            RequestQueue queue = Volley.newRequestQueue(v.getContext());
+            String url = "http://10.0.2.2:3300/createChat";
+
+            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                    response -> {
+                        //create CHAT CORRECT
+                        Toast.makeText(v.getContext(), "Chat Created", Toast.LENGTH_SHORT).show();
+
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            FragmentTransaction fs = getFragmentManager().beginTransaction();
+                            ChatFragment f = new ChatFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("chat_id", json.getString("id_chat"));
+                            bundle.putString("chat_name", this.announcement_creator);
+                            bundle.putString("user_id", this.user_id);
+                            f.setArguments(bundle);
+                            fs.replace(R.id.fragment_container, f);
+                            fs.addToBackStack("announcement");
+                            fs.commit();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    },
+                    error -> {
+                        //create CHAT FAILED
+                        Toast.makeText(v.getContext(), "Couldn't Create Chat", Toast.LENGTH_SHORT).show();
+                    }
+            ) {
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+
+                    Map<String, String> params = new HashMap<String, String>();
+
+                    params.put("user1", user_id);
+                    params.put("user2", announcement_creator);
+
+                    return new JSONObject(params).toString().getBytes();
+                }
+
+                @Override
+                public String getBodyContentType() {
+                    return "application/json";
+                }
+            };
+            queue.add(postRequest);
+
+        });
     }
 
     private void downloadAllImages (String id_announcement){
