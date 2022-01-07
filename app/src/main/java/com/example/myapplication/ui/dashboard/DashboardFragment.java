@@ -113,6 +113,7 @@ public class DashboardFragment extends Fragment {
 
     private TextView getNewTextView(View view, String group_id, String group_name){
         TextView tmp = new TextView(view.getContext());
+        tmp.setBackground(getResources().getDrawable(R.drawable.border2));
         tmp.setText(group_name);
         tmp.setPadding(0, 30, 0, 30);
         tmp.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);

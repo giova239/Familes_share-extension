@@ -102,6 +102,15 @@ public class GroupFragment extends Fragment {
                             //Change Announcement Title
                             TextView announcement_title = layout.findViewById(R.id.annoncementTitle);
                             announcement_title.setText(json.getJSONObject(i).getString("title"));
+                            //Change Announcement Creator
+                            TextView announcement_creator = layout.findViewById(R.id.annoncementCreator);
+                            announcement_creator.setText(json.getJSONObject(index).getString("name")+" "+json.getJSONObject(index).getString("surname"));
+                            //Change HasOrNeed
+                            if(json.getJSONObject(index).getString("type").equals("true")){
+                                TextView hasOrNeed = layout.findViewById(R.id.HasOrNeed);
+                                hasOrNeed.setText("NEEDS THIS");
+                                hasOrNeed.setTextColor(getResources().getColor(R.color.red));
+                            }
                             //Set OnClickListener for announcement item
                             layout.setOnClickListener(v -> {
                                 FragmentTransaction fs = getFragmentManager().beginTransaction();

@@ -97,6 +97,13 @@ public class AnnouncementFragment extends Fragment {
         title.setText(this.announcement_name);
         TextView desc = view.findViewById(R.id.annoncementDescription);
         desc.setText(this.announcement_description);
+        TextView creator = view.findViewById(R.id.CreatorDescription);
+        creator.setText(this.announcement_creator);
+        if(this.announcement_type.equals("true")){
+            TextView hasOrNeed = view.findViewById(R.id.HasOrNeed);
+            hasOrNeed.setText("NEEDS THIS");
+            hasOrNeed.setTextColor(getResources().getColor(R.color.red));
+        }
         this.imgSlider = view.findViewById(R.id.imageSlider);
         downloadAllImages(this.announcement_id);
     }
