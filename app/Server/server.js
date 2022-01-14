@@ -415,10 +415,10 @@ function deleteImgAnn(id_announcement){
     client.end;
 }
 
-function deleteAnnUser(creator, id_announcement){
-    let deleteQ = `delete from "Announcements" where "Announcements".creator=$1 and "Announcements".id_announcement=$2`;
+function deleteAnnUser(id_announcement){
+    let deleteQ = `delete from "Announcements" where "Announcements".id_announcement=$1`;
 
-    client.query(deleteQ,[creator, id_announcement] ,(err, result)=>{
+    client.query(deleteQ,[id_announcement] ,(err, result)=>{
         if(!err){
             deleteImgAnn(id_announcement);
         }else{
@@ -428,34 +428,28 @@ function deleteAnnUser(creator, id_announcement){
     client.end;
 }
 
-app.get('/deleteAnnouncementUser', (req, res)=> {
-    const message = req.body; //MI PASSI CREATORE, UTENTE CON CUI SONO LOGGATO, ID_GROUP E ID_ANNOUNCEMENT
+app.get('/deleteAnnouncement/:id', (req, res)=> {
+    const id_announcement = req.params.id;
 
-    let insertQuery2 = `delete from "AnnouncementsGroups" where "AnnouncementsGroups".id_group=$1 and "AnnouncementsGroups".id_announcement=$2`;
+    let insertQuery2 = `delete from "AnnouncementsGroups" where "AnnouncementsGroups".id_announcement=$1`;
 
-    if(message.creator==message.loggato){   //Check if i'm the creator of the announcement
-        client.query(insertQuery2, [message.id_group, message.id_announcement], (err, result)=>{
-            if(!err){
-                deleteAnnUser(message.creator, message.id_announcement);
-                deleteImgAnn(message.id_announcement);
-                res.send("Deletion was successful");
-            }
-            else{ console.log(err.message) }
-        })
-        client.end;
-    }else{
-        res.status(400).json({
-            message: "Non puoi eliminare un annuncio non tuo!",
-        });
-    }
+    client.query(insertQuery2, [id_announcement], (err, result)=>{
+        if(!err){
+            deleteAnnUser(id_announcement);
+            deleteImgAnn(id_announcement);
+            res.send("Deletion was successful");
+        }
+        else{ console.log(err.message) }
+    })
+    client.end;
 })
 
-app.get('/getAllUserAnnouncements', (req, res)=> {
-    const message = req.body;
+app.get('/getAllUserAnnouncements/:id', (req, res)=> {
+    const message = req.params;
 
     let insertQuery = `Select * from "Announcements" where "Announcements".creator=$1`;
 
-    client.query(insertQuery, [message.creator], (err, result)=>{
+    client.query(insertQuery, [message.id], (err, result)=>{
         if(!err){
             res.send(result.rows);
         }
@@ -464,50 +458,23 @@ app.get('/getAllUserAnnouncements', (req, res)=> {
     client.end;
 })
 
-app.get('/updateAnnouncement', (req, res)=> {
-    const message = req.body;//MI PASSI title, descriptio, type, id, creator
+app.post('/updateAnnouncement', (req, res)=> {
+    const message = req.body; //{id_announcement, title, description, type}
 
     let insertQuery = `UPDATE "Announcements"
                         SET title=$1, description=$2, type=$3
-                        WHERE "Announcements".id_announcement=$4 and "Announcements".creator=$5`;
+                        WHERE "Announcements".id_announcement=$4`;
 
-    client.query(insertQuery, [message.title,message.description,message.type,message.id_announcement,message.creator], (err, result)=>{
-        if(!err){
-            res.send("Updated successful");
+    client.query(insertQuery, [message.title,message.description,message.type,message.id_announcement], (err, result)=>{
+        if(err){
+            res.status(400).json({
+                message: "Error on Updating Announcement"
+            });
+        }else{
+            res.status(200).json({
+                message: "Announcement succesfully updated"
+            });
         }
-        else{ console.log(err.message) }
-    })
+    });
     client.end;
-})
-/*
-function deleteGroupUser(id_group){
-    let deleteQ = `delete from "Groups" where "Groups".id_group=$1`;
-
-    client.query(deleteQ,[id_group] ,(err, result)=>{
-        if(err){ console.log(err.message) }
-    })
-    client.end;
-}
-
-app.get('/deleteAnnouncementUser', (req, res)=> {
-    const message = req.body;
-
-    let insertQuery2 = `delete from "UsersGroups" where "UsersGroups".id_group=$1 and "UsersGroups".id_announcement=$2`;
-
-    client.query(insertQuery2, [message.id_group, message.id_user], (err, result)=>{
-        if(!err){
-            deleteGroupUser(message.id_group);
-            res.send("Deletion was successful");
-        }
-        else{ console.log(err.message) }
-    })
-    client.end;
-})
-*/
-
-
-
-
-
-
-
+});

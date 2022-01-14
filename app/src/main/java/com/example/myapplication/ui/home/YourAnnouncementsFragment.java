@@ -72,7 +72,7 @@ public class YourAnnouncementsFragment extends Fragment {
     private void loadGroupInfos(View view){
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://10.0.2.2:3300/getUserAnnouncements/"+this.user_id;
+        String url ="http://10.0.2.2:3300/getAllUserAnnouncements/"+this.user_id;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -98,25 +98,27 @@ public class YourAnnouncementsFragment extends Fragment {
                             announcement_title.setText(json.getJSONObject(i).getString("title"));
                             //Change Announcement Creator
                             TextView announcement_creator = layout.findViewById(R.id.annoncementCreator);
-                            announcement_creator.setText(json.getJSONObject(index).getString("name")+" "+json.getJSONObject(index).getString("surname"));
+                            announcement_creator.setText("");
                             //Change HasOrNeed
                             if(json.getJSONObject(index).getString("type").equals("true")){
                                 TextView hasOrNeed = layout.findViewById(R.id.HasOrNeed);
-                                hasOrNeed.setText("NEEDS THIS");
+                                hasOrNeed.setText("YOU NEED THIS");
                                 hasOrNeed.setTextColor(getResources().getColor(R.color.red));
+                            }else{
+                                TextView hasOrNeed = layout.findViewById(R.id.HasOrNeed);
+                                hasOrNeed.setText("YOU HAVE THIS");
+                                hasOrNeed.setTextColor(getResources().getColor(R.color.green));
                             }
                             //Set OnClickListener for announcement item
                             layout.setOnClickListener(v -> {
                                 FragmentTransaction fs = getFragmentManager().beginTransaction();
-                                EditAnnouncementFragment f = new EditAnnouncementFragment();
+                                ManageAnnouncementFragment f = new ManageAnnouncementFragment();
                                 Bundle b = new Bundle();
                                 try {
                                     b.putString("announcement_id", json.getJSONObject(index).getString("id_announcement"));
                                     b.putString("announcement_name", json.getJSONObject(index).getString("title"));
                                     b.putString("announcement_description", json.getJSONObject(index).getString("description"));
                                     b.putString("announcement_type", json.getJSONObject(index).getString("type"));
-                                    b.putString("announcement_creator", json.getJSONObject(index).getString("name")+" "+json.getJSONObject(index).getString("surname"));
-                                    b.putString("creator_id", json.getJSONObject(index).getString("creator"));
                                     b.putString("user_id", this.user_id);
                                 } catch (JSONException e) {
                                     System.out.println("error JSON" + e.toString());
