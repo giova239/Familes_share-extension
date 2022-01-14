@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -179,8 +181,21 @@ public class AnnouncementFragment extends Fragment {
                         ammount = Integer.parseInt(json.getJSONObject(0).getString("ammount"));
                         System.out.println("AMMOUNT OF IMAGES:" + ammount);
 
-                        for (int i = 1; i <= ammount; i++){
-                            downloadImage(this.announcement_id, Integer.toString(i), ammount);
+                        if(ammount > 0){
+                            //Download Images
+                            for (int i = 1; i <= ammount; i++){
+                                downloadImage(this.announcement_id, Integer.toString(i), ammount);
+                            }
+                        }else{
+                            //Hide ImageSlider
+                            SliderView s = getView().findViewById(R.id.imageSlider);
+                            s.setVisibility(View.INVISIBLE);
+                            ImageView img = new ImageView(getContext());
+                            img.setLayoutParams(s.getLayoutParams());
+                            img.setImageResource(R.drawable.ic_image_missing);
+                            img.setPadding(30, 30, 30, 30);
+                            LinearLayout l = getView().findViewById(R.id.missingImage);
+                            l.addView(img);
                         }
 
                     } catch (JSONException e) {

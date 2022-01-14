@@ -53,6 +53,16 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
 
+        <LinearLayout
+            android:id="@+id/missingImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/announcementTitle"
+            app:layout_constraintBottom_toBottomOf="@id/imageSlider"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:orientation="vertical" />
+
         <TextView
             android:id="@+id/CreatorTitle"
             android:layout_width="wrap_content"

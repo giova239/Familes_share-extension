@@ -92,50 +92,54 @@ public class GroupFragment extends Fragment {
                         for(int i = 0; i < json.length(); i++){
                             final int index = i;
 
-                            //Get Template
-                            LayoutInflater inflater = LayoutInflater.from(view.getContext());
-                            View layout = inflater.inflate(R.layout.announcementitem, null, false);
+                            if(!(json.getJSONObject(index).getString("creator").equals(this.user_id))){
 
-                            //Change Image
-                            ImageView img = layout.findViewById(R.id.announcementIcon);
-                            downloadImage(json.getJSONObject(index).getString("id_announcement"),img);
-                            //Change Announcement Title
-                            TextView announcement_title = layout.findViewById(R.id.annoncementTitle);
-                            announcement_title.setText(json.getJSONObject(i).getString("title"));
-                            //Change Announcement Creator
-                            TextView announcement_creator = layout.findViewById(R.id.annoncementCreator);
-                            announcement_creator.setText(json.getJSONObject(index).getString("name")+" "+json.getJSONObject(index).getString("surname"));
-                            //Change HasOrNeed
-                            if(json.getJSONObject(index).getString("type").equals("true")){
-                                TextView hasOrNeed = layout.findViewById(R.id.HasOrNeed);
-                                hasOrNeed.setText("NEEDS THIS");
-                                hasOrNeed.setTextColor(getResources().getColor(R.color.red));
-                            }
-                            //Set OnClickListener for announcement item
-                            layout.setOnClickListener(v -> {
-                                FragmentTransaction fs = getFragmentManager().beginTransaction();
-                                AnnouncementFragment f = new AnnouncementFragment();
-                                Bundle b = new Bundle();
-                                try {
-                                    b.putString("announcement_id", json.getJSONObject(index).getString("id_announcement"));
-                                    b.putString("announcement_name", json.getJSONObject(index).getString("title"));
-                                    b.putString("announcement_description", json.getJSONObject(index).getString("description"));
-                                    b.putString("announcement_type", json.getJSONObject(index).getString("type"));
-                                    b.putString("announcement_creator", json.getJSONObject(index).getString("name")+" "+json.getJSONObject(index).getString("surname"));
-                                    b.putString("creator_id", json.getJSONObject(index).getString("creator"));
-                                    b.putString("user_id", this.user_id);
-                                } catch (JSONException e) {
-                                    System.out.println("error JSON" + e.toString());
+                                //Get Template
+                                LayoutInflater inflater = LayoutInflater.from(view.getContext());
+                                View layout = inflater.inflate(R.layout.announcementitem, null, false);
+
+                                //Change Image
+                                ImageView img = layout.findViewById(R.id.announcementIcon);
+                                downloadImage(json.getJSONObject(index).getString("id_announcement"),img);
+                                //Change Announcement Title
+                                TextView announcement_title = layout.findViewById(R.id.annoncementTitle);
+                                announcement_title.setText(json.getJSONObject(i).getString("title"));
+                                //Change Announcement Creator
+                                TextView announcement_creator = layout.findViewById(R.id.annoncementCreator);
+                                announcement_creator.setText(json.getJSONObject(index).getString("name")+" "+json.getJSONObject(index).getString("surname"));
+                                //Change HasOrNeed
+                                if(json.getJSONObject(index).getString("type").equals("true")){
+                                    TextView hasOrNeed = layout.findViewById(R.id.HasOrNeed);
+                                    hasOrNeed.setText("NEEDS THIS");
+                                    hasOrNeed.setTextColor(getResources().getColor(R.color.red));
                                 }
-                                f.setArguments(b);
-                                fs.replace(R.id.fragment_container, f);
-                                fs.addToBackStack("announcements");
-                                fs.commit();
-                            });
+                                //Set OnClickListener for announcement item
+                                layout.setOnClickListener(v -> {
+                                    FragmentTransaction fs = getFragmentManager().beginTransaction();
+                                    AnnouncementFragment f = new AnnouncementFragment();
+                                    Bundle b = new Bundle();
+                                    try {
+                                        b.putString("announcement_id", json.getJSONObject(index).getString("id_announcement"));
+                                        b.putString("announcement_name", json.getJSONObject(index).getString("title"));
+                                        b.putString("announcement_description", json.getJSONObject(index).getString("description"));
+                                        b.putString("announcement_type", json.getJSONObject(index).getString("type"));
+                                        b.putString("announcement_creator", json.getJSONObject(index).getString("name")+" "+json.getJSONObject(index).getString("surname"));
+                                        b.putString("creator_id", json.getJSONObject(index).getString("creator"));
+                                        b.putString("user_id", this.user_id);
+                                    } catch (JSONException e) {
+                                        System.out.println("error JSON" + e.toString());
+                                    }
+                                    f.setArguments(b);
+                                    fs.replace(R.id.fragment_container, f);
+                                    fs.addToBackStack("announcements");
+                                    fs.commit();
+                                });
 
-                            //Load announcement
-                            LinearLayout linear = view.findViewById(R.id.announcementList);
-                            linear.addView(layout);
+                                //Load announcement
+                                LinearLayout linear = view.findViewById(R.id.announcementList);
+                                linear.addView(layout);
+
+                            }
 
                         }
 
