@@ -1,10 +1,12 @@
 package com.example.myapplication.ui.home;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentHomeBinding;
+import com.example.myapplication.ui.dashboard.CreateGroupFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,6 +89,18 @@ public class HomeFragment extends Fragment {
                 });
 
         queue.add(stringRequest);
+
+        Button yourAnnouncementsButton = view.findViewById(R.id.yourAnnouncementsButton);
+        yourAnnouncementsButton.setOnClickListener(v -> {
+            FragmentTransaction fs = getFragmentManager().beginTransaction();
+            YourAnnouncementsFragment f = new YourAnnouncementsFragment();
+            Bundle b = new Bundle();
+            b.putString("user_id", this.user_id);
+            f.setArguments(b);
+            fs.replace(R.id.fragment_container, f);
+            fs.addToBackStack("profile");
+            fs.commit();
+        });
 
     }
 }

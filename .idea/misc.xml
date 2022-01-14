@@ -42,6 +42,7 @@
         <entry key="app/src/main/res/layout/fragment_create_announcement.xml" value="0.1381340579710145" />
         <entry key="app/src/main/res/layout/fragment_create_group.xml" value="0.40705350586851985" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/fragment_edit_announcement.xml" value="0.2708333333333333" />
         <entry key="app/src/main/res/layout/fragment_group.xml" value="0.15070921985815602" />
         <entry key="app/src/main/res/layout/fragment_groups.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.23641304347826086" />
@@ -50,6 +51,7 @@
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.22477529447298333" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/layout/fragment_search_group.xml" value="0.213768115942029" />
+        <entry key="app/src/main/res/layout/fragment_your_announcements.xml" value="0.25677083333333334" />
         <entry key="app/src/main/res/layout/groups.xml" value="0.3986584634016943" />
         <entry key="app/src/main/res/layout/login.xml" value="1.0231940906486467" />
         <entry key="app/src/main/res/layout/notificationitem.xml" value="0.3098958333333333" />
