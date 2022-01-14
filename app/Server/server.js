@@ -33,7 +33,7 @@ const  user  =  require("./routes/users");
 app.use("/user",  user);  //Route for /user endpoint of API
 
 
-//---------------------------------------QUERY CHE ANDRANNO POI SPOSTATE IN UN'ALTRA CARTELLA----------------------------------------//
+//-------------------------------------------------------------------------------//
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
@@ -323,7 +323,6 @@ app.post('/joinGroup', (req, res)=> {
     client.end;
 })
 
-
 app.post('/createChat', (req, res)=> {
     const user = req.body;
 
@@ -407,9 +406,74 @@ app.post('/sendMessage', (req, res)=> {
     client.end;
 })
 
+function deleteImgAnn(id_announcement){
+    let deleteQ = `delete from "Images" where "Images".id_announcement=$1`;
 
+    client.query(deleteQ,[id_announcement] ,(err, result)=>{
+        if(err){ console.log(err.message) }
+    })
+    client.end;
+}
 
+function deleteAnnUser(creator, id_announcement){
+    let deleteQ = `delete from "Announcements" where "Announcements".creator=$1 and "Announcements".id_announcement=$2`;
 
+    client.query(deleteQ,[creator, id_announcement] ,(err, result)=>{
+        if(!err){
+            deleteImgAnn(id_announcement);
+        }else{
+            console.log(err.message)
+        }
+    })
+    client.end;
+}
+
+app.get('/deleteAnnouncementUser', (req, res)=> {
+    const message = req.body; //MI PASSI CREATORE, UTENTE CON CUI SONO LOGGATO, ID_GROUP E ID_ANNOUNCEMENT
+
+    let insertQuery2 = `delete from "AnnouncementsGroups" where "AnnouncementsGroups".id_group=$1 and "AnnouncementsGroups".id_announcement=$2`;
+
+    if(message.creator==message.loggato){   //Check if i'm the creator of the announcement
+        client.query(insertQuery2, [message.id_group, message.id_announcement], (err, result)=>{
+            if(!err){
+                deleteAnnUser(message.creator, message.id_announcement);
+                deleteImgAnn(message.id_announcement);
+                res.send("Deletion was successful");
+            }
+            else{ console.log(err.message) }
+        })
+        client.end;
+    }else{
+        res.status(400).json({
+            message: "Non puoi eliminare un annuncio non tuo!",
+        });
+    }
+})
+/*
+function deleteGroupUser(id_group){
+    let deleteQ = `delete from "Groups" where "Groups".id_group=$1`;
+
+    client.query(deleteQ,[id_group] ,(err, result)=>{
+        if(err){ console.log(err.message) }
+    })
+    client.end;
+}
+
+app.get('/deleteAnnouncementUser', (req, res)=> {
+    const message = req.body;
+
+    let insertQuery2 = `delete from "UsersGroups" where "UsersGroups".id_group=$1 and "UsersGroups".id_announcement=$2`;
+
+    client.query(insertQuery2, [message.id_group, message.id_user], (err, result)=>{
+        if(!err){
+            deleteGroupUser(message.id_group);
+            res.send("Deletion was successful");
+        }
+        else{ console.log(err.message) }
+    })
+    client.end;
+})
+*/
 
 
 
