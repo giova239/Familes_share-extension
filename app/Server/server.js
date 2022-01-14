@@ -449,6 +449,36 @@ app.get('/deleteAnnouncementUser', (req, res)=> {
         });
     }
 })
+
+app.get('/getAllUserAnnouncements', (req, res)=> {
+    const message = req.body;
+
+    let insertQuery = `Select * from "Announcements" where "Announcements".creator=$1`;
+
+    client.query(insertQuery, [message.creator], (err, result)=>{
+        if(!err){
+            res.send(result.rows);
+        }
+        else{ console.log(err.message) }
+    })
+    client.end;
+})
+
+app.get('/updateAnnouncement', (req, res)=> {
+    const message = req.body;//MI PASSI title, descriptio, type, id, creator
+
+    let insertQuery = `UPDATE "Announcements"
+                        SET title=$1, description=$2, type=$3
+                        WHERE "Announcements".id_announcement=$4 and "Announcements".creator=$5`;
+
+    client.query(insertQuery, [message.title,message.description,message.type,message.id_announcement,message.creator], (err, result)=>{
+        if(!err){
+            res.send("Updated successful");
+        }
+        else{ console.log(err.message) }
+    })
+    client.end;
+})
 /*
 function deleteGroupUser(id_group){
     let deleteQ = `delete from "Groups" where "Groups".id_group=$1`;
