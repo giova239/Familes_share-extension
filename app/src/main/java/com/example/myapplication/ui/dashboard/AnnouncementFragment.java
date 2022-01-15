@@ -129,6 +129,7 @@ public class AnnouncementFragment extends Fragment {
                             bundle.putString("chat_id", json.getString("id_chat"));
                             bundle.putString("chat_name", this.announcement_creator);
                             bundle.putString("user_id", this.user_id);
+                            bundle.putString("other_id", this.creator_id);
                             f.setArguments(bundle);
                             fs.replace(R.id.fragment_container, f);
                             fs.addToBackStack("announcement");
