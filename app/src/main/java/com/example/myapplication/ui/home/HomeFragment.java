@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -52,6 +57,7 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private String user_id;
+    private ProgressBar pbar;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -72,6 +78,8 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.user_id = getArguments().getString("user_id");
+        this.pbar = getView().findViewById(R.id.progressBar);
+        this.pbar.setVisibility(View.VISIBLE);
         loadUserProfile(getView());
         loadProfileImage(getView());
     }
@@ -98,6 +106,7 @@ public class HomeFragment extends Fragment {
                         nameFill.setText(json.getJSONObject(0).getString("name"));
                         surnameFill.setText(json.getJSONObject(0).getString("surname"));
                         birthDateFill.setText(json.getJSONObject(0).getString("birth_date"));
+                        this.pbar.setVisibility(View.INVISIBLE);
 
                     } catch (JSONException e) {
                         System.out.println("error JSON" + e.toString());
@@ -127,6 +136,38 @@ public class HomeFragment extends Fragment {
 
     private void loadProfileImage(View view){
 
+        TransferImageService service = ServiceGenerator.createService(TransferImageService.class);
+
+        Call<ResponseBody> call = service.downloadImage("http://10.0.2.2:3300/getProfileImage/"+this.user_id);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("server contacted and has image");
+
+                    String pathWereFileWasStored = writeResponseBodyToDisk(response.body());
+
+                    if(pathWereFileWasStored != null){
+                        System.out.println("IMAGE DOWNLOADED at:" + pathWereFileWasStored);
+                        Uri u = Uri.fromFile(new File(pathWereFileWasStored));
+                        if(u != null) {
+                            ((ImageView) view.findViewById(R.id.profileImageView)).setImageURI(u);
+                        }
+                    }else{
+                        System.out.println("error while downloading the image");
+                    }
+                } else {
+                    System.out.println("server contact failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("error");
+            }
+        });
+
         view.findViewById(R.id.profileImage).setOnClickListener(v -> {
             verifyStoragePermissions(getActivity());
             Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -140,6 +181,8 @@ public class HomeFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == -1 && requestCode == 1){
+
+            this.pbar.setVisibility(View.VISIBLE);
 
             //retrieve profile image and upload it to Server
             Uri image_uri = data.getData();
@@ -158,17 +201,23 @@ public class HomeFragment extends Fragment {
                         //show it as profileImage
                         ImageView img = getView().findViewById(R.id.profileImageView);
                         img.setImageURI(image_uri);
+                        stopPbar();
                         Toast.makeText(getContext(), "Profile Image Uploaded", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        stopPbar();
                         Toast.makeText(getContext(), "Error while uploading the profile Image", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
 
         }
+    }
+
+    private void stopPbar(){
+        this.pbar.setVisibility(View.INVISIBLE);
     }
 
     private String getPath(Uri uri)
@@ -183,5 +232,54 @@ public class HomeFragment extends Fragment {
         return s;
     }
 
+    private String writeResponseBodyToDisk(ResponseBody body) {
+        try {
+
+            String path = getContext().getExternalFilesDir(null) + File.separator + "test.jpeg";
+            File imageFile = new File(path);
+
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                byte[] fileReader = new byte[4096];
+
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
+
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(imageFile);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+
+                    if (read == -1) {
+                        break;
+                    }
+
+                    outputStream.write(fileReader, 0, read);
+
+                    fileSizeDownloaded += read;
+                }
+
+                outputStream.flush();
+
+                return path;
+
+            } catch (IOException e) {
+                return null;
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
 }

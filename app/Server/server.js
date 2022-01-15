@@ -42,7 +42,7 @@ const imageStorage = multer.diskStorage({
     // Destination to store image     
     destination: 'images', 
     filename: (req, file, cb) => {
-        cb(null, req.body.id_announcement+ '_' + file.fieldname + '_' + Date.now() + path.extname(file.originalname))
+        cb(null, req.body.id_announcement+ '_' + file.fieldname + '_' + Date.now())
     }
 });
 
@@ -79,7 +79,7 @@ const profileImageStorage = multer.diskStorage({
     // Destination to store image     
     destination: 'profileImages', 
     filename: (req, file, cb) => {
-        cb(null, req.body.id_user + path.extname(file.originalname))
+        cb(null, req.body.id_user)
     }
 });
 
@@ -150,6 +150,21 @@ app.get("/getImageByIndex/:id/:index", (req, res)=>{ //get first image of the an
     });
     client.end;
 })
+
+app.get("/getProfileImage/:id", (req, res)=>{ //get first image of the announcement
+    client.query(`SELECT "Users".image_path FROM "Users" WHERE id_user=$1`, [req.params.id] ,(err, result)=>{
+        if(!err && result.rows[0].image_path){
+           fs.readFile(result.rows[0].image_path, function (err, data) {
+                if (!err){
+                res.send(data);
+                }else{
+                console.log(err);
+                }
+           });
+        }
+    });
+    client.end;
+ })
 
 app.get('/users', (req, res)=>{
     client.query(`Select *, to_char(birth_date, 'DD-MON-YYYY') as birth_date from "Users"`, (err, result)=>{
