@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageProfile"
+            android:id="@+id/Icon"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:src="@drawable/ic_profile"
@@ -31,10 +31,46 @@
             android:textSize="30dp"
             android:textColor="#FFFFFF"
             android:textAlignment="center"
-            app:layout_constraintTop_toBottomOf="@id/imageProfile"
-            app:layout_constraintBottom_toTopOf="@id/Name"
+            app:layout_constraintTop_toBottomOf="@id/Icon"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profileImage"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:cardCornerRadius="250dp"
+            app:layout_constraintTop_toBottomOf="@id/profile"
+            app:layout_constraintBottom_toTopOf="@+id/Name"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <ImageView
+                android:id="@+id/profileImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_profile" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    android:background="@color/trasparent_black"
+                    android:src="@drawable/ic_edit_announcement"
+                    android:scaleType="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
 
 
         <TextView
@@ -44,7 +80,7 @@
             android:text="Email:"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="30dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/SurnameFill"
@@ -67,10 +103,10 @@
             android:text="Name:"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="30dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile"
+            app:layout_constraintTop_toBottomOf="@+id/profileImage"
             app:layout_constraintBottom_toTopOf="@id/Surname"/>
 
         <TextView
@@ -114,7 +150,7 @@
             android:text="BirthDate:"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="30dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Email"/>
@@ -136,7 +172,7 @@
             android:drawableLeft="@drawable/ic_annoncement_list"
             android:text="your announcements"
             android:padding="15dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="100dp"
             android:backgroundTint="@color/design_default_color_primary"
             android:drawableTint="@color/design_default_color_secondary"

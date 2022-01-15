@@ -12,9 +12,16 @@ import retrofit2.http.Url;
 public interface TransferImageService {
 
     @Multipart
-    @POST("uploadimage")
+    @POST("uploadImage")
     Call<ResponseBody> uploadImage(
             @Part("id_announcement") RequestBody id_announcement,
+            @Part MultipartBody.Part file
+    );
+
+    @Multipart
+    @POST("uploadProfileImage")
+    Call<ResponseBody> uploadProfileImage(
+            @Part("id_user") RequestBody id_user,
             @Part MultipartBody.Part file
     );
 

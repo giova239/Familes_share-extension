@@ -147,7 +147,7 @@ public class CreateAnnouncementFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == -1 && requestCode == 1){
 
-            //retrive Image and show it on photoList
+            //retrieve Image and show it on photoList
             ImageView img = new ImageView(getContext());
             Uri image_uri = data.getData();
             LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

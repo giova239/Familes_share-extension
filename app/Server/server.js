@@ -57,15 +57,51 @@ const imageUpload = multer({
     }
 }) 
 
-app.post('/uploadimage', imageUpload.single('image'), (req, res) => {
+app.post('/uploadImage', imageUpload.single('image'), (req, res) => {
     console.log("UPLOADING IMAGE #" + req.body.id_announcement + " AT PATH: " + req.file.path);
 
     let insertQuery = `insert into "Images"(image_path, id_announcement)
-                         values ('${req.file.path}', ${req.body.id_announcement.split("_")[0]})`;
+                         values ($1, $2)`;
 
-    client.query(insertQuery, (err, result)=>{
+    client.query(insertQuery, [req.file.path, req.body.id_announcement.split("_")[0]], (err, result)=>{
         if(!err){
             res.send('Insertion was successful')
+        }
+        else{ console.log(err.message) }
+        })
+    client.end;   
+
+}, (error, req, res, next) => {
+    res.status(400).send({ error: error.message })
+})
+
+const profileImageStorage = multer.diskStorage({
+    // Destination to store image     
+    destination: 'profileImages', 
+    filename: (req, file, cb) => {
+        cb(null, req.body.id_user + path.extname(file.originalname))
+    }
+});
+
+const imageProfileUpload = multer({
+    storage: profileImageStorage,
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(png|jpg|jpeg|PNG|JPG|JPEG)$/)) { 
+            // upload only png and jpg format
+            return cb(new Error('Please upload a Image'))
+        }
+        cb(undefined, true)
+    }
+})
+
+app.post('/uploadProfileImage', imageProfileUpload.single('image'), (req, res) => {
+    console.log("UPLOADING PROFILE IMAGE OF USER " + req.body.id_user + " AT PATH: " + req.file.path);
+
+    let insertQuery = `UPDATE "Users" SET image_path=$1 WHERE "Users".id_user=$2`;
+
+    client.query(insertQuery, [req.file.path, req.body.id_user], (err, result)=>{
+        if(!err){
+            res.send('Profile Image uploaded correctly')
         }
         else{ console.log(err.message) }
         })
@@ -192,6 +228,7 @@ app.get('/notifications/:id', (req, res)=>{
 const bodyParser = require("body-parser");
 const { Pool, _pools } = require('pg/lib');
 const { rows } = require('pg/lib/defaults');
+const res = require("express/lib/response");
 app.use(bodyParser.json());
 
 app.post('/users', (req, res)=> { //Richieste post bisogna farle con postman
@@ -406,23 +443,54 @@ app.post('/sendMessage', (req, res)=> {
     client.end;
 })
 
-function deleteImgAnn(id_announcement){
-    let deleteQ = `delete from "Images" where "Images".id_announcement=$1`;
+function deleteFile(id_announcement){
+    let getImgPath = `SELECT * FROM "Images" WHERE "Images".id_announcement=$1`;
 
-    client.query(deleteQ,[id_announcement] ,(err, result)=>{
-        if(err){ console.log(err.message) }
+    client.query(getImgPath,[id_announcement] ,(err, result)=>{
+        if(!err){
+            result.rows.forEach(e => {
+                let path = e.image_path
+                if(path){
+                    console.log("DELETING IMAGE AT " + path);
+                    fs.unlink(path, function (err) {
+                        if (err) {
+                            console.error(err);
+                        } else {
+                            console.log(path + " DELETED");
+                        }
+                    });
+                }
+            });
+        }
+    })
+    client.end;
+}
+
+function deleteImgAnn(id_announcement){
+
+    deleteFile(id_announcement);
+
+    let deleteImg = `delete from "Images" where "Images".id_announcement=$1`;
+
+    client.query(deleteImg,[id_announcement] ,(err, result)=>{
+        if(!err){
+            console.log("ROW DELETED FROM IMAGES TABLE");
+            deleteAnnUser(id_announcement);
+        }else{
+            console.log(err.message)
+        }
     })
     client.end;
 }
 
 function deleteAnnUser(id_announcement){
-    let deleteQ = `delete from "Announcements" where "Announcements".id_announcement=$1`;
+    let deleteAnn = `delete from "Announcements" where "Announcements".id_announcement=$1`;
 
-    client.query(deleteQ,[id_announcement] ,(err, result)=>{
+    client.query(deleteAnn,[id_announcement] ,(err, result)=>{
         if(!err){
-            deleteImgAnn(id_announcement);
+            console.log("ROW DELETED FROM ANNOUNCEMENTS TABLE");
         }else{
-            console.log(err.message)
+            console.log(err.message) 
         }
     })
     client.end;
@@ -431,13 +499,13 @@ function deleteAnnUser(id_announcement){
 app.get('/deleteAnnouncement/:id', (req, res)=> {
     const id_announcement = req.params.id;
 
-    let insertQuery2 = `delete from "AnnouncementsGroups" where "AnnouncementsGroups".id_announcement=$1`;
+    let deleteQuery = `delete from "AnnouncementsGroups" where "AnnouncementsGroups".id_announcement=$1`;
 
-    client.query(insertQuery2, [id_announcement], (err, result)=>{
+    client.query(deleteQuery, [id_announcement], (err, result)=>{
         if(!err){
-            deleteAnnUser(id_announcement);
+            console.log("ROW DELETED FROM ANNNOUNCEMENTSGROUPS TABLE");
             deleteImgAnn(id_announcement);
-            res.send("Deletion was successful");
+            res.send("announcement deleted")
         }
         else{ console.log(err.message) }
     })
