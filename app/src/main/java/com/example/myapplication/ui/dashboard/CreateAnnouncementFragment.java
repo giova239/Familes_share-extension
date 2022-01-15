@@ -150,10 +150,12 @@ public class CreateAnnouncementFragment extends Fragment {
             //retrieve Image and show it on photoList
             ImageView img = new ImageView(getContext());
             Uri image_uri = data.getData();
-            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             p.setMargins(20,20,20,20);
             img.setLayoutParams(p);
             img.setImageURI(image_uri);
+            img.setAdjustViewBounds(true);
+            img.setScaleType(ImageView.ScaleType.CENTER_CROP);
             LinearLayout photoList = getView().findViewById(R.id.photoList);
             photoList.addView(img);
 
