@@ -120,8 +120,6 @@ public class AnnouncementFragment extends Fragment {
 
             StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                     response -> {
-                        //create CHAT CORRECT
-                        Toast.makeText(v.getContext(), "Chat Created", Toast.LENGTH_SHORT).show();
 
                         try {
                             JSONObject json = new JSONObject(response);
@@ -141,7 +139,7 @@ public class AnnouncementFragment extends Fragment {
                     },
                     error -> {
                         //create CHAT FAILED
-                        Toast.makeText(v.getContext(), "Couldn't Create Chat", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "Error while creating the chat", Toast.LENGTH_SHORT).show();
                     }
             ) {
                 @Override

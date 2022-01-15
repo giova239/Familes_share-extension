@@ -2,12 +2,14 @@ package com.example.myapplication.ui.notifications;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -24,14 +26,26 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.myapplication.R;
+import com.example.myapplication.Retrofit.ServiceGenerator;
+import com.example.myapplication.Retrofit.TransferImageService;
 import com.example.myapplication.databinding.FragmentChatBinding;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatFragment extends Fragment {
 
@@ -39,6 +53,7 @@ public class ChatFragment extends Fragment {
     private String user_id;
     private String chat_id;
     private String chat_name;
+    private String other_id;
 
 
     @Override
@@ -46,6 +61,7 @@ public class ChatFragment extends Fragment {
         this.user_id = getArguments().getString("user_id");
         this.chat_id = getArguments().getString("chat_id");
         this.chat_name = getArguments().getString("chat_name");
+        this.other_id = getArguments().getString("other_id");
         super.onCreate(savedInstanceState);
     }
 
@@ -79,6 +95,7 @@ public class ChatFragment extends Fragment {
         //add user profile bar
         ConstraintLayout profile = (ConstraintLayout) inflater.inflate(R.layout.chat_image, null, false);
         ((TextView) profile.findViewById(R.id.chat_name)).setText(this.chat_name);
+        setProfileImage(profile.findViewById(R.id.chat_image), this.other_id);
         profile_bar.addView(profile);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
@@ -190,6 +207,90 @@ public class ChatFragment extends Fragment {
             };
             queue.add(postRequest);
         });
+    }
+
+    private void setProfileImage(ImageView profileImage, String usr) {
+        TransferImageService service = ServiceGenerator.createService(TransferImageService.class);
+
+        Call<ResponseBody> call = service.downloadImage("http://10.0.2.2:3300/getProfileImage/"+usr);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("server contacted and has image");
+
+                    String pathWereFileWasStored = writeResponseBodyToDisk(response.body());
+
+                    if(pathWereFileWasStored != null){
+                        System.out.println("IMAGE DOWNLOADED at:" + pathWereFileWasStored);
+                        Uri u = Uri.fromFile(new File(pathWereFileWasStored));
+                        if(u != null) {
+                            profileImage.setImageURI(u);
+                        }
+                    }else{
+                        System.out.println("error while downloading the image");
+                    }
+                } else {
+                    System.out.println("server contact failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("error");
+            }
+        });
+    }
+
+    private String writeResponseBodyToDisk(ResponseBody body) {
+        try {
+
+            String path = getContext().getExternalFilesDir(null) + File.separator + "test.jpeg";
+            File imageFile = new File(path);
+
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                byte[] fileReader = new byte[4096];
+
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
+
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(imageFile);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+
+                    if (read == -1) {
+                        break;
+                    }
+
+                    outputStream.write(fileReader, 0, read);
+
+                    fileSizeDownloaded += read;
+                }
+
+                outputStream.flush();
+
+                return path;
+
+            } catch (IOException e) {
+                return null;
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+            return null;
+        }
     }
 
 }

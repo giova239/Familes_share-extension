@@ -422,6 +422,7 @@ app.get('/getUserChats/:id', (req, res)=> {
 
     client.query(insertQuery, [user.id] , (err, result)=>{
         if(!err){
+            console.log(result.rows);
             res.send(result.rows)
         }
         else{ console.log(err.message) }
